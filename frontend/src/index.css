@@ -1,0 +1,667 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* Class-based dark mode: <html class="dark"> toggles the theme */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-primary-50: #EEF2FF;
+  --color-primary-100: #E0E7FF;
+  --color-primary-200: #C7D2FE;
+  --color-primary-300: #A5B4FC;
+  --color-primary-400: #818CF8;
+  --color-primary-500: #6366F1;
+  --color-primary-600: #4F46E5;
+  --color-primary-700: #4338CA;
+  --color-primary-800: #3730A3;
+  --color-primary-900: #312E81;
+
+  --color-surface-50:  #F8FAFC;
+  --color-surface-100: #F1F5F9;
+  --color-surface-200: #E2E8F0;
+  --color-surface-300: #CBD5E1;
+  --color-surface-400: #94A3B8;
+  --color-surface-500: #64748B;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1E293B;
+  --color-surface-900: #0F172A;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger:  #EF4444;
+  --color-info:    #0EA5E9;
+
+  /* Radius scale */
+  --radius-sm:   8px;
+  --radius-md:   10px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
+
+  /* Elevation tokens */
+  --shadow-card:       0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --shadow-card-hover: 0 6px 20px rgba(0,0,0,0.08);
+  --shadow-dropdown:   0 10px 40px rgba(0,0,0,0.12);
+  --shadow-modal:      0 20px 60px rgba(0,0,0,0.18);
+  --shadow-elevated:   0 8px 30px rgba(0,0,0,0.10);
+
+  /* Transition speed tokens */
+  --transition-fast:   150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow:   300ms ease;
+
+  /* Surface tint colors */
+  --color-surface-tint-indigo:  rgba(99,102,241,0.06);
+  --color-surface-tint-emerald: rgba(16,185,129,0.06);
+  --color-surface-tint-amber:   rgba(245,158,11,0.06);
+  --color-surface-tint-red:     rgba(239,68,68,0.06);
+}
+
+/* NOTE: Tailwind v4 puts preflight in @layer base and utilities in
+   @layer utilities. Unlayered CSS beats layered CSS regardless of
+   specificity, so ALL custom rules below MUST live inside a layer —
+   otherwise they would override Tailwind's spacing/typography
+   utilities (p-*, m-*, text-*, ...) across the whole app.
+   The old unlayered `* { margin: 0; padding: 0 }` reset has been
+   removed entirely: Tailwind preflight already does exactly that,
+   but inside @layer base so utilities can still win. */
+
+/* ─── Base: element defaults ─────────────────────────── */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #F1F5F9;
+    color: #1E293B;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Typography */
+  h1 { font-size: 1.5rem;  font-weight: 700; letter-spacing: -0.02em; color: #0F172A; }
+  h2 { font-size: 1.125rem; font-weight: 600; color: #1E293B; }
+  h3 { font-size: 1rem;     font-weight: 600; color: #1E293B; }
+
+  /* Scrollbars */
+  ::-webkit-scrollbar          { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track    { background: transparent; }
+  ::-webkit-scrollbar-thumb    { background: #CBD5E1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+  /* Focus-visible ring */
+  :focus-visible {
+    outline: 2px solid #6366F1;
+    outline-offset: 2px;
+  }
+  button:focus:not(:focus-visible),
+  input:focus:not(:focus-visible),
+  select:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* ─── Animations ──────────────────────────────────────── */
+@keyframes fadeIn    { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn   { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeInUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float     { 0%,100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-20px) scale(1.02); } }
+@keyframes ringPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); } }
+@keyframes logoShimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+/* ─── Components ──────────────────────────────────────── */
+@layer components {
+  /* Animation utilities */
+  .animate-fadeIn   { animation: fadeIn  0.25s ease-out; }
+  .animate-fadeInUp { animation: fadeInUp 0.3s ease-out both; }
+  .animate-slideIn  { animation: slideIn 0.25s ease-out; }
+  .animate-float    { animation: float   6s ease-in-out infinite; }
+  .ring-pulse       { animation: ringPulse 1.5s ease-in-out infinite; }
+  .logo-shimmer     {
+    background-size: 200% 200%;
+    animation: logoShimmer 3s ease infinite;
+  }
+
+  /* ─── App Shell ───────────────────────────────────── */
+  /* #root fills the viewport. Auth pages handle their own layout.
+     The Layout component sets flex + overflow for the app shell. */
+  #root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── Sidebar ─────────────────────────────────────── */
+  .sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    background: #0F172A;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ─── Main content area ───────────────────────────── */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: #F1F5F9;
+  }
+
+  /* ─── Topbar ──────────────────────────────────────── */
+  .topbar {
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  /* ─── Page canvas ─────────────────────────────────── */
+  .page-canvas {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    scroll-behavior: smooth;
+  }
+
+  @media (min-width: 1280px) { .page-canvas { padding: 28px 32px; } }
+  @media (max-width:  768px) { .page-canvas { padding: 16px; } }
+
+  /* ─── Cards ───────────────────────────────────────── */
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card-hover:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* ─── Stat cards ──────────────────────────────────── */
+  .stat-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+  }
+  .stat-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* ─── Sidebar nav item ────────────────────────────── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #94A3B8;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: #CBD5E1; }
+  .nav-item.active {
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.35);
+  }
+
+  /* ─── Tables ──────────────────────────────────────── */
+  .table-head th {
+    padding: 10px 16px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94A3B8;
+    border-bottom: 1px solid #F1F5F9;
+    white-space: nowrap;
+    background: #FAFAFA;
+  }
+  .table-row td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    color: #334155;
+    border-bottom: 1px solid #F8FAFC;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .table-row:hover td { background: #F8FAFC; cursor: pointer; }
+  .table-row:last-child td { border-bottom: none; }
+
+  /* ─── Badges ──────────────────────────────────────── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ─── Buttons ─────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    padding: 8px 14px;
+  }
+  .btn-primary { background: #4F46E5; color: #fff; box-shadow: 0 2px 8px rgba(79,70,229,0.25); }
+  .btn-primary:hover { background: #4338CA; box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
+  .btn-outline  { background: #fff; color: #475569; border: 1px solid #E2E8F0; }
+  .btn-outline:hover  { background: #F8FAFC; border-color: #CBD5E1; }
+  .btn-sm { padding: 6px 12px; font-size: 0.75rem; border-radius: 8px; }
+  .btn-lg { padding: 11px 20px; font-size: 0.9375rem; border-radius: 12px; }
+
+  /* ─── Inputs ──────────────────────────────────────── */
+  .input-base {
+    width: 100%;
+    padding: 9px 13px;
+    font-size: 0.875rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    background: #fff;
+    color: #1E293B;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+    font-family: inherit;
+  }
+  .input-base::placeholder { color: #94A3B8; }
+  .input-base:hover { border-color: #CBD5E1; }
+  .input-base:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+
+  /* ─── Modals ──────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.45);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    width: 100%;
+    max-height: 90dvh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .modal-body   { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .modal-footer { padding: 14px 24px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* ─── Kanban ──────────────────────────────────────── */
+  .kanban-board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; }
+  .kanban-col {
+    min-width: 280px;
+    border-radius: 16px;
+    border: 2px solid;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 240px);
+  }
+  .kanban-col-header {
+    padding: 12px 14px;
+    border-radius: 12px 12px 0 0;
+    flex-shrink: 0;
+  }
+  .kanban-col-body { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+
+  .kanban-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #A5B4FC; transform: translateY(-1px); }
+
+  /* ─── Timeline ────────────────────────────────────── */
+  .timeline-item { display: flex; gap: 14px; padding-bottom: 20px; }
+  .timeline-line  { width: 1px; background: #F1F5F9; flex-shrink: 0; margin: 4px auto; }
+
+  /* ─── Misc utilities ──────────────────────────────── */
+  .truncate-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .glass-card {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.28);
+  }
+
+  /* ─── Tooltip ─────────────────────────────────────── */
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0F172A;
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 50;
+  }
+  .has-tooltip:hover .tooltip { opacity: 1; }
+
+  /* ─── Section labels ──────────────────────────────── */
+  .section-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #94A3B8;
+  }
+
+  /* ─── Progress bar ────────────────────────────────── */
+  .progress-track { height: 6px; background: #F1F5F9; border-radius: 3px; overflow: hidden; }
+  .progress-fill  { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+  /* ─── Empty states ────────────────────────────────── */
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 24px; text-align: center; }
+  .empty-state-icon { width: 56px; height: 56px; background: #F1F5F9; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+
+  /* ─── Skeleton pulse ──────────────────────────────── */
+  .skeleton {
+    background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 8px;
+  }
+
+  /* ─── Recharts tweaks ─────────────────────────────── */
+  .recharts-tooltip-wrapper .recharts-default-tooltip {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+  }
+  .recharts-cartesian-axis-tick-value { font-size: 11px; fill: #94A3B8; }
+
+  /* ─── Responsive helpers ──────────────────────────── */
+  @media (max-width: 1023px) {
+    .sidebar-mobile-hidden { display: none; }
+  }
+
+  /* ─── New layout helpers ──────────────────────────── */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #F1F5F9;
+    padding: 0.75rem;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: #F1F5F9;
+    margin: 1.5rem 0;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    background: #F1F5F9;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+    font-family: inherit;
+    font-weight: 500;
+    color: #475569;
+  }
+  .chip:hover { background: #E2E8F0; }
+  .chip.active { background: #4F46E5; color: #fff; }
+
+  /* ─── Scrollbar thin utility ─────────────────────── */
+  .scrollbar-thin::-webkit-scrollbar { width: 3px; height: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+  /* ─── Active scale ────────────────────────────────── */
+  .btn:active, .btn-primary:active { transform: scale(0.97); }
+}
+
+/* ─── Print styles ────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   DARK THEME
+   Tailwind v4 utilities compile to var(--color-*), so re-mapping the
+   neutral palette under <html class="dark"> re-skins every utility
+   (incl. hover/focus/divide/gradient variants) in one place.
+   Saturated accents (indigo-600 buttons, red-500 badges…) keep their
+   values; status tints/text/borders are re-mapped role-by-role in the
+   unlayered block further down. Scopes that are dark in both themes
+   (sidebar, auth pages) carry .keep-dark and restore the palette.
+   ══════════════════════════════════════════════════════ */
+@layer base {
+  :root { --chart-grid: #F1F5F9; }
+
+  .dark {
+    color-scheme: dark;
+    --chart-grid: #334155;
+    --color-white: #1E293B;      /* cards, topbar, modals, inputs */
+    --color-slate-50: #0F172A;   /* page bg / softest hover */
+    --color-slate-100: #334155;  /* hairline borders, muted chips */
+    --color-slate-200: #475569;  /* stronger borders / hover chips */
+    --color-slate-300: #64748B;  /* hover borders, mid greys */
+    --color-slate-500: #94A3B8;  /* muted text */
+    --color-slate-600: #CBD5E1;  /* secondary text */
+    --color-slate-700: #E2E8F0;
+    --color-slate-800: #F1F5F9;  /* primary text */
+    --color-slate-900: #F8FAFC;  /* headings */
+    --color-slate-950: #F8FAFC;
+  }
+  :root { color-scheme: light; }
+
+  /* Scopes designed dark in both themes (sidebar + auth pages):
+     restore the original palette inside them while dark mode is on. */
+  .dark .keep-dark {
+    --color-white: #ffffff;
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-300: #cbd5e1;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
+    --color-slate-600: #475569;
+    --color-slate-700: #334155;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+    --color-slate-950: #020617;
+  }
+
+  .dark body { background-color: #0F172A; color: #E2E8F0; }
+  .dark h1 { color: #F8FAFC; }
+  .dark h2, .dark h3 { color: #F1F5F9; }
+  .dark ::-webkit-scrollbar-thumb { background: #475569; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+}
+
+@layer components {
+  .dark .main-content { background: #0F172A; }
+  .dark .topbar { background: #1E293B; border-bottom-color: #334155; }
+  .dark .card,
+  .dark .stat-card,
+  .dark .modal-box,
+  .dark .kanban-card { background: #1E293B; border-color: #334155; }
+  .dark .table-head th { background: #0F172A; border-bottom-color: #334155; }
+  .dark .table-row td { color: #CBD5E1; border-bottom-color: rgba(255,255,255,0.06); }
+  .dark .table-row:hover td { background: rgba(255,255,255,0.04); }
+  .dark .btn-outline { background: #1E293B; color: #CBD5E1; border-color: #475569; }
+  .dark .btn-outline:hover { background: #0F172A; border-color: #64748B; }
+  .dark .input-base { background: #1E293B; border-color: #475569; color: #F1F5F9; }
+  .dark .input-base:hover { border-color: #64748B; }
+  .dark .modal-header, .dark .modal-footer { border-color: #334155; }
+  .dark .timeline-line { background: #334155; }
+  .dark .tooltip { background: #334155; }
+  .dark .progress-track, .dark .empty-state-icon { background: #334155; }
+  .dark .skeleton { background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%); }
+  .dark .chip { background: #334155; color: #CBD5E1; }
+  .dark .chip:hover { background: #475569; }
+  .dark .filter-row { background: #1E293B; border-color: #334155; }
+  .dark .section-divider { background: #334155; }
+  .dark .glass-card { background: rgba(30,41,59,0.82); border-color: rgba(255,255,255,0.08); }
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb { background: #475569; }
+  .dark .recharts-default-tooltip { background: #1E293B !important; }
+}
+
+/* Unlayered on purpose: role-based utility overrides must beat
+   Tailwind's layered utilities (unlayered > layered, any specificity). */
+
+/* Keep whites light: solid accent backgrounds (indigo/red/emerald-600…)
+   keep their brand colors, so their text must stay white in dark mode. */
+.dark .text-white,
+.dark .hover\:text-white:hover,
+.dark .group-hover\:text-white { color: #F8FAFC; }
+.dark .ring-white { --tw-ring-color: #F8FAFC; }
+.dark .hover\:bg-white:hover { background-color: #334155; }
+.dark .after\:bg-white::after { background-color: #F8FAFC; }
+
+/* Status/accent tint backgrounds → dark tints */
+.dark .bg-indigo-50, .dark .hover\:bg-indigo-50:hover { background-color: #1E1B4B; }
+.dark .bg-indigo-100, .dark .hover\:bg-indigo-100:hover, .dark .group-hover\:bg-indigo-100 { background-color: #312E81; }
+.dark .bg-indigo-50\/50 { background-color: rgba(30,27,75,0.5); }
+.dark .bg-red-50, .dark .hover\:bg-red-50:hover { background-color: #450A0A; }
+.dark .bg-red-50\/40 { background-color: rgba(69,10,10,0.4); }
+.dark .bg-red-100 { background-color: #7F1D1D; }
+.dark .bg-emerald-50, .dark .hover\:bg-emerald-50:hover { background-color: #022C22; }
+.dark .bg-emerald-100, .dark .hover\:bg-emerald-100:hover { background-color: #064E3B; }
+.dark .bg-amber-50, .dark .hover\:bg-amber-50:hover { background-color: #451A03; }
+.dark .bg-amber-100 { background-color: #78350F; }
+.dark .bg-blue-50 { background-color: #172554; }
+.dark .bg-blue-100 { background-color: #1E3A8A; }
+.dark .bg-sky-50 { background-color: #082F49; }
+.dark .bg-sky-100, .dark .hover\:bg-sky-100:hover { background-color: #0C4A6E; }
+.dark .bg-orange-50 { background-color: #431407; }
+.dark .bg-orange-100 { background-color: #7C2D12; }
+.dark .bg-purple-50 { background-color: #3B0764; }
+.dark .bg-purple-100 { background-color: #581C87; }
+.dark .bg-green-50 { background-color: #052E16; }
+.dark .bg-green-100 { background-color: #14532D; }
+.dark .bg-cyan-50 { background-color: #083344; }
+.dark .bg-cyan-100 { background-color: #155E75; }
+.dark .bg-yellow-100 { background-color: #713F12; }
+
+/* Status/accent text → lighter steps (400/300 steps are already fine on dark) */
+.dark .text-indigo-500, .dark .text-indigo-600, .dark .group-hover\:text-indigo-600 { color: #818CF8; }
+.dark .text-indigo-700, .dark .hover\:text-indigo-700:hover, .dark .group-hover\:text-indigo-700 { color: #A5B4FC; }
+.dark .text-indigo-800 { color: #C7D2FE; }
+.dark .text-red-500, .dark .hover\:text-red-500:hover { color: #F87171; }
+.dark .text-red-600, .dark .hover\:text-red-600:hover { color: #F87171; }
+.dark .text-red-700 { color: #FCA5A5; }
+.dark .text-emerald-500, .dark .text-emerald-600, .dark .hover\:text-emerald-600:hover { color: #34D399; }
+.dark .text-emerald-700, .dark .hover\:text-emerald-700:hover { color: #6EE7B7; }
+.dark .text-amber-500, .dark .text-amber-600, .dark .hover\:text-amber-600:hover { color: #FBBF24; }
+.dark .text-amber-700 { color: #FCD34D; }
+.dark .text-blue-500, .dark .text-blue-600 { color: #60A5FA; }
+.dark .text-sky-600 { color: #38BDF8; }
+.dark .text-sky-700 { color: #7DD3FC; }
+.dark .text-orange-500, .dark .text-orange-600 { color: #FB923C; }
+.dark .text-purple-500, .dark .text-purple-600 { color: #C084FC; }
+.dark .text-purple-700 { color: #D8B4FE; }
+.dark .text-green-600 { color: #4ADE80; }
+.dark .text-cyan-500, .dark .text-cyan-600 { color: #22D3EE; }
+
+/* Status/accent borders → dark tints */
+.dark .border-amber-200 { border-color: #92400E; }
+.dark .border-emerald-200 { border-color: #065F46; }
+.dark .border-red-200, .dark .border-red-300 { border-color: #991B1B; }
+.dark .border-blue-200 { border-color: #1E40AF; }
+.dark .border-sky-200 { border-color: #0E7490; }
+.dark .border-orange-200 { border-color: #9A3412; }
+.dark .border-green-200 { border-color: #166534; }
+.dark .border-purple-200 { border-color: #6B21A8; }
+.dark .border-indigo-100 { border-color: #312E81; }
+.dark .border-indigo-200, .dark .hover\:border-indigo-200:hover { border-color: #3730A3; }
+
+@media print {
+  aside,
+  header,
+  nav {
+    display: none !important;
+  }
+  main,
+  .page-canvas {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .print\:hidden { display: none !important; }
+}
