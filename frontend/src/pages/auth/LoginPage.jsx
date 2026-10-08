@@ -21,14 +21,6 @@ const LoginPage = () => {
     else setError(result.message);
   };
 
-  const fillDemo = (role) => {
-    const creds = {
-      manager:   { email: 'manager@crefto.com',   password: 'Admin@123' },
-      developer: { email: 'michael@crefto.com',   password: 'Admin@123' },
-      sales:     { email: 'james@crefto.com',     password: 'Admin@123' },
-    };
-    setFormData(creds[role]);
-  };
 
   return (
     /* Outer shell — fills full viewport, scrolls on small screens */
@@ -156,28 +148,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 pt-5 border-t border-white/10">
-            <p className="text-xs text-slate-400 text-center mb-3 font-medium tracking-wide uppercase">
-              Quick Demo Login
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {              [
-                { label: 'Manager',    role: 'manager' },
-                { label: 'Developer',  role: 'developer' },
-                { label: 'Sales Rep',  role: 'sales' },
-              ].map(item => (
-                <button
-                  key={item.role}
-                  onClick={() => fillDemo(item.role)}
-                  className="py-2 text-xs font-medium bg-white/10 text-slate-300 rounded-xl
-                             hover:bg-white/20 transition-all border border-white/10 active:scale-95"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* No self-signup — managers add users from the Users page */}
           <p className="text-center text-sm text-slate-400 mt-6">
