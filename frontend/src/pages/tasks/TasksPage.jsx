@@ -20,7 +20,7 @@ const TaskForm = ({ task, onSubmit, onClose, users, loading }) => {
     tags: task?.tags?.join(', ') || '',
   });
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean) }); }} className="space-y-4">
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo: f.assignedTo || null }); }} className="space-y-4">
       <Input label="Task Title" required value={f.title} onChange={(e) => setF(p => ({ ...p, title: e.target.value }))} placeholder="Describe the task..." />
       <Textarea label="Description" value={f.description} rows={3} onChange={(e) => setF(p => ({ ...p, description: e.target.value }))} />
       <div className="grid grid-cols-2 gap-4">

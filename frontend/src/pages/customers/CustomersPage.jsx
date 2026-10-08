@@ -21,7 +21,7 @@ const CustomerForm = ({ customer, onSubmit, onClose, users, loading }) => {
   });
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean) }); }} className="space-y-4">
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo: f.assignedTo || null }); }} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <Input label="Full Name" required value={f.name} onChange={(e) => setF(p => ({ ...p, name: e.target.value }))} placeholder="John Doe" className="col-span-2" />
         <Input label="Company" value={f.company} onChange={(e) => setF(p => ({ ...p, company: e.target.value }))} />

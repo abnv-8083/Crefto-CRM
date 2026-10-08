@@ -17,7 +17,7 @@ const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading }) => {
     status: followUp?.status || 'Pending',
   });
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit(f); }} className="space-y-4">
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, assignedTo: f.assignedTo || null }); }} className="space-y-4">
       <Input label="Follow-up Title" required value={f.title} onChange={(e) => setF(p => ({ ...p, title: e.target.value }))} placeholder="Call with prospect..." />
       <div className="grid grid-cols-2 gap-4">
         <Select label="Type" value={f.type} onChange={(e) => setF(p => ({ ...p, type: e.target.value }))}>

@@ -105,7 +105,7 @@ const DealForm = ({ deal, onSubmit, onClose, customers, users, loading }) => {
   });
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, value: parseFloat(f.value) || 0, probability: parseInt(f.probability) }); }} className="space-y-4">
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, value: parseFloat(f.value) || 0, probability: parseInt(f.probability), assignedTo: f.assignedTo || null, customer: f.customer || null }); }} className="space-y-4">
       <Input label="Deal Name" required value={f.name} onChange={(e) => setF(p => ({ ...p, name: e.target.value }))} placeholder="e.g., Enterprise License Q4" />
       <div className="grid grid-cols-2 gap-4">
         <Select label="Customer" value={f.customer} onChange={(e) => setF(p => ({ ...p, customer: e.target.value }))}>
