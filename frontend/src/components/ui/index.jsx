@@ -147,7 +147,7 @@ export const KanbanCard = ({ title, subtitle, status, assignee, date, color = 'i
 };
 
 // Stat card component
-export const StatCard = ({ title, value, icon: Icon, change, color = 'indigo', trend, suffix = '' }) => {
+export const StatCard = ({ title, value, icon: Icon, change, color = 'indigo', trend, suffix = '', className = '', style }) => {
   const colors = {
     indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', icon: 'text-indigo-500', border: 'border-l-indigo-500' },
     green:  { bg: 'bg-emerald-50', text: 'text-emerald-600', icon: 'text-emerald-500', border: 'border-l-emerald-500' },
@@ -162,7 +162,7 @@ export const StatCard = ({ title, value, icon: Icon, change, color = 'indigo', t
   const c = colors[color] || colors.indigo;
 
   return (
-    <div className={`bg-white rounded-2xl border border-slate-200 border-l-4 ${c.border} shadow-sm p-5 card-hover`}>
+    <div className={`bg-white rounded-2xl border border-slate-200 border-l-4 ${c.border} shadow-sm p-5 card-hover ${className}`} style={style}>
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-medium text-slate-500">{title}</p>
         <div className={`w-10 h-10 rounded-xl ${c.bg} flex items-center justify-center`}>
@@ -187,6 +187,17 @@ export const StatCard = ({ title, value, icon: Icon, change, color = 'indigo', t
     </div>
   );
 };
+
+export const StatCardSkeleton = () => (
+  <div className="bg-white rounded-2xl border border-slate-200 border-l-4 border-l-slate-200 shadow-sm p-5">
+    <div className="flex items-center justify-between mb-3">
+      <Skeleton className="h-4 w-24" />
+      <Skeleton className="w-10 h-10 rounded-xl" />
+    </div>
+    <Skeleton className="h-8 w-16 mb-4" />
+    <Skeleton className="h-1 w-full rounded-full" />
+  </div>
+);
 
 // Button component
 export const Button = ({

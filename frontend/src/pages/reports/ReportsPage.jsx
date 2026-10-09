@@ -5,7 +5,7 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import { Card, PageHeader, Skeleton, formatCurrency, StatCard } from '../../components/ui';
+import { Card, PageHeader, Skeleton, formatCurrency, StatCard, StatCardSkeleton } from '../../components/ui';
 
 const COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
 
@@ -52,10 +52,14 @@ const ReportsPage = () => {
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <StatCard title="Total Revenue" value={loading ? '...' : formatCurrency(summary.totalRevenue)} icon={DollarSign} color="green" />
-        <StatCard title="New Leads" value={loading ? '...' : (summary.newLeads || 0)} icon={Target} color="indigo" />
-        <StatCard title="New Customers" value={loading ? '...' : (summary.newCustomers || 0)} icon={Users} color="blue" />
-        <StatCard title="Won Deals" value={loading ? '...' : (summary.wonDeals || 0)} icon={TrendingUp} color="purple" />
+        {loading ? [...Array(4)].map((_, i) => <StatCardSkeleton key={i} />) : (
+          <>
+            <StatCard title="Total Revenue" value={formatCurrency(summary.totalRevenue)} icon={DollarSign} color="green" />
+            <StatCard title="New Leads" value={(summary.newLeads || 0)} icon={Target} color="indigo" />
+            <StatCard title="New Customers" value={(summary.newCustomers || 0)} icon={Users} color="blue" />
+            <StatCard title="Won Deals" value={(summary.wonDeals || 0)} icon={TrendingUp} color="purple" />
+          </>
+        )}
       </div>
 
       {/* Charts */}

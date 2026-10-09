@@ -11,7 +11,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import {
-  StatCard, Card, Badge, StatusBadge, Avatar, formatCurrency, timeAgo, ActivityIcon, Skeleton
+  StatCard, StatCardSkeleton, Card, Badge, StatusBadge, Avatar, formatCurrency, timeAgo, ActivityIcon, Skeleton
 } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -140,7 +140,7 @@ const DashboardPage = () => {
       {/* Stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {loading
-          ? [...Array(10)].map((_, i) => <Skeleton key={i} className="h-28 rounded-2xl" />)
+          ? [...Array(10)].map((_, i) => <StatCardSkeleton key={i} />)
           : statCards.map((card, i) => (
             <StatCard
               key={i}

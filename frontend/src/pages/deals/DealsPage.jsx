@@ -4,7 +4,7 @@ import { dealsAPI, customersAPI, usersAPI } from '../../api';
 import { Plus, Edit3, Trash2, DollarSign, Calendar, Handshake, TrendingUp } from 'lucide-react';
 import {
   Card, Button, Badge, StatusBadge, Avatar, PageHeader, EmptyState, Modal,
-  Input, Select, Textarea, formatCurrency, formatDate, ConfirmDialog, Skeleton, StatCard
+  Input, Select, Textarea, formatCurrency, formatDate, ConfirmDialog, Skeleton, StatCard, StatCardSkeleton
 } from '../../components/ui';
 import toast from 'react-hot-toast';
 
@@ -207,10 +207,14 @@ const DealsPage = () => {
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <StatCard title="Total Pipeline" value={formatCurrency(totalPipeline)} icon={TrendingUp} color="indigo" />
-        <StatCard title="Weighted Pipeline" value={formatCurrency(weightedPipeline)} icon={DollarSign} color="blue" />
-        <StatCard title="Won Revenue" value={formatCurrency(wonRevenue)} icon={TrendingUp} color="green" />
-        <StatCard title="Conversion Rate" value={`${conversionRate}%`} icon={Handshake} color="purple" />
+        {loading ? [...Array(4)].map((_, i) => <StatCardSkeleton key={i} />) : (
+          <>
+            <StatCard title="Total Pipeline" value={formatCurrency(totalPipeline)} icon={TrendingUp} color="indigo" />
+            <StatCard title="Weighted Pipeline" value={formatCurrency(weightedPipeline)} icon={DollarSign} color="blue" />
+            <StatCard title="Won Revenue" value={formatCurrency(wonRevenue)} icon={TrendingUp} color="green" />
+            <StatCard title="Conversion Rate" value={`${conversionRate}%`} icon={Handshake} color="purple" />
+          </>
+        )}
       </div>
 
       {/* Kanban Board */}
