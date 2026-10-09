@@ -85,8 +85,8 @@ router.put('/demo-requests/:id/delivery', devTeam, deliverDemoRequest);
 router.route('/demo-requests/:id').put(updateDemoRequest).delete(deleteDemoRequest);
 
 // Users (manager only — creation requires manager approval before login)
-router.route('/users').get(managerOnly, getUsers).post(managerOnly, createUser);
-router.route('/users/:id').get(managerOnly, getUser).put(managerOnly, updateUser).delete(managerOnly, deleteUser);
+router.route('/users').get(allRoles, getUsers).post(managerOnly, createUser);
+router.route('/users/:id').get(allRoles, getUser).put(managerOnly, updateUser).delete(managerOnly, deleteUser);
 router.put('/users/:id/toggle-status', managerOnly, toggleUserStatus);
 router.put('/users/:id/approve', managerOnly, approveUser);
 router.put('/users/:id/reject', managerOnly, rejectUser);
