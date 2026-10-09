@@ -42,7 +42,7 @@ router.get('/reports', managerOnly, getReports);
 router.get('/search', salesTeam, globalSearch);
 
 // Customers
-router.route('/customers').get(salesTeam, getCustomers).post(salesTeam, createCustomer);
+router.route('/customers').get(allRoles, getCustomers).post(salesTeam, createCustomer);
 router.route('/customers/:id').get(salesTeam, getCustomer).put(salesTeam, updateCustomer).delete(salesTeam, deleteCustomer);
 router.post('/customers/:id/activities', salesTeam, addCustomerActivity);
 
@@ -71,12 +71,12 @@ router.put('/notifications/mark-all-read', markAllAsRead);
 router.route('/notifications/:id').put(markAsRead).delete(deleteNotification);
 
 // Products (read for quotation building, manage = manager)
-router.route('/products').get(salesTeam, getProducts).post(managerOnly, createProduct);
+router.route('/products').get(allRoles, getProducts).post(managerOnly, createProduct);
 router.route('/products/:id').get(salesTeam, getProduct).put(managerOnly, updateProduct).delete(managerOnly, deleteProduct);
 
 // Quotations
-router.route('/quotations').get(salesTeam, getQuotations).post(salesTeam, createQuotation);
-router.route('/quotations/:id').get(salesTeam, getQuotation).put(salesTeam, updateQuotation).delete(salesTeam, deleteQuotation);
+router.route('/quotations').get(allRoles, getQuotations).post(allRoles, createQuotation);
+router.route('/quotations/:id').get(allRoles, getQuotation).put(allRoles, updateQuotation).delete(allRoles, deleteQuotation);
 
 // Demo requests: sales reps open them, developers deliver them, managers see all
 router.route('/demo-requests').get(getDemoRequests).post(salesTeam, createDemoRequest);

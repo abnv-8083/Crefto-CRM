@@ -41,7 +41,7 @@ const NAV_GROUPS = [
     label: 'Commerce',
     items: [
       { path: '/products', label: 'Products', icon: Package, roles: ['manager'] },
-      { path: '/quotations', label: 'Quotations', icon: FileText, roles: ['manager', 'sales_rep'] },
+      { path: '/quotations', label: 'Quotations', icon: FileText, roles: ['manager', 'sales_rep', 'developer'] },
     ],
   },
   {

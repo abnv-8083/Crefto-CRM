@@ -80,8 +80,8 @@ function App() {
             <Route path="/calendar" element={<RequireRole roles={TEAM}><CalendarPage /></RequireRole>} />
             <Route path="/activities" element={<RequireRole roles={SALES}><ActivitiesPage /></RequireRole>} />
             <Route path="/products" element={<RequireRole roles={MANAGER}><ProductsPage /></RequireRole>} />
-            <Route path="/quotations" element={<RequireRole roles={SALES}><QuotationsPage /></RequireRole>} />
-            <Route path="/quotations/:id" element={<RequireRole roles={SALES}><QuotationDetailPage /></RequireRole>} />
+            <Route path="/quotations" element={<RequireRole roles={TEAM}><QuotationsPage /></RequireRole>} />
+            <Route path="/quotations/:id" element={<RequireRole roles={TEAM}><QuotationDetailPage /></RequireRole>} />
             <Route path="/reports" element={<RequireRole roles={MANAGER}><ReportsPage /></RequireRole>} />
             <Route path="/users" element={<RequireRole roles={MANAGER}><UsersPage /></RequireRole>} />
             <Route path="/settings" element={<SettingsPage />} />
