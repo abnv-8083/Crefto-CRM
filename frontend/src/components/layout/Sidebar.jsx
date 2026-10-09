@@ -89,13 +89,8 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
           {!collapsed ? (
             <>
               <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 logo-shimmer flex items-center justify-center shadow-lg flex-shrink-0">
-                  <TrendingUp className="w-4 h-4 text-white" />
-                </div>
-                <div className="min-w-0 animate-fadeIn">
-                  <span className="text-slate-900 dark:text-white font-bold text-sm tracking-tight truncate block">Crefto</span>
-                  <span className="text-indigo-400 text-[10px] block -mt-0.5 font-medium truncate">CRM</span>
-                </div>
+                <img src="/logo-light.png" alt="Crefto CRM" className="h-8 dark:hidden block object-contain" />
+                <img src="/logo-dark.png" alt="Crefto CRM" className="h-8 hidden dark:block object-contain" />
               </div>
 
               <div className="flex items-center gap-1 flex-shrink-0">
@@ -122,9 +117,9 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
               onClick={onToggleCollapse}
               aria-label="Expand sidebar (Ctrl+B)"
               title="Expand sidebar (Ctrl+B)"
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 logo-shimmer flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all group"
+              className="w-10 h-10 rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all group"
             >
-              <TrendingUp className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+              <img src="/logo.png" alt="Crefto" className="w-7 h-7 object-contain group-hover:scale-110 transition-transform" />
             </button>
           )}
         </div>

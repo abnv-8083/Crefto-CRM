@@ -68,13 +68,8 @@ const QuotationDetailPage = () => {
         <div className="flex justify-between items-start border-b border-slate-100 pb-6 mb-6">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
-              </div>
-              <div>
-                <h2 className="font-bold text-slate-900 text-lg">Crefto CRM</h2>
-                <p className="text-xs text-slate-400">Enterprise Solutions</p>
-              </div>
+              <img src="/logo-light.png" alt="Crefto CRM" className="h-10 object-contain dark:hidden block" />
+              <img src="/logo-dark.png" alt="Crefto CRM" className="h-10 object-contain hidden dark:block" />
             </div>
           </div>
           <div className="text-right">

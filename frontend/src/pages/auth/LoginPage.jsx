@@ -44,15 +44,8 @@ const LoginPage = () => {
 
         {/* Logo + headline */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600
-                            flex items-center justify-center shadow-xl shadow-indigo-500/30 flex-shrink-0">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left">
-              <p className="text-white font-bold text-2xl leading-tight">Crefto</p>
-              <p className="text-indigo-400 text-xs font-medium tracking-wide">CRM Platform</p>
-            </div>
+          <div className="inline-flex items-center justify-center mb-5 w-full">
+            <img src="/logo-dark.png" alt="Crefto CRM" className="h-12 object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-white leading-tight">Welcome back</h1>
           <p className="text-slate-400 text-sm mt-2">Sign in to your account to continue</p>

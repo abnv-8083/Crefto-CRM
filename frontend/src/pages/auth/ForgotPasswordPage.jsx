@@ -37,11 +37,8 @@ const ForgotPasswordPage = () => {
       </div>
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <TrendingUp className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-white font-bold text-2xl">Crefto CRM</span>
+          <div className="inline-flex items-center justify-center mb-4 w-full">
+            <img src="/logo-dark.png" alt="Crefto CRM" className="h-12 object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-white">Reset password</h1>
           <p className="text-slate-400 text-sm mt-1">Enter your email to receive a reset link</p>

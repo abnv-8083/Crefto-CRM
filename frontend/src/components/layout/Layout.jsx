@@ -38,11 +38,7 @@ const Layout = () => {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-            </svg>
-          </div>
+          <img src="/logo.png" alt="Crefto CRM" className="w-12 h-12 object-contain mx-auto mb-4 animate-pulse" />
           <p className="text-slate-500 text-sm">Loading Crefto CRM...</p>
         </div>
       </div>
