@@ -97,16 +97,16 @@ const DashboardPage = () => {
   }));
 
   const statCards = [
-    { title: 'Total Leads', value: stats.totalLeads, icon: Target, color: 'indigo', change: 12 },
-    { title: 'New Leads', value: stats.newLeads, icon: TrendingUp, color: 'blue', change: 8 },
-    { title: 'Total Customers', value: stats.totalCustomers, icon: UserCheck, color: 'green', change: 5 },
-    { title: 'Active Deals', value: stats.activeDeals, icon: Handshake, color: 'purple', change: 15 },
-    { title: 'Won Deals', value: stats.wonDeals, icon: Trophy, color: 'amber', change: 22 },
-    { title: 'Lost Deals', value: stats.lostDeals, icon: XCircle, color: 'red', change: -3 },
-    { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'green', change: 18 },
-    { title: 'Pending Tasks', value: stats.pendingTasks, icon: CheckSquare, color: 'orange', change: -10 },
-    { title: 'Follow-ups Today', value: stats.followUpsToday, icon: Phone, color: 'cyan', change: 0 },
-    { title: 'Qualified Leads', value: stats.qualifiedLeads, icon: AlertCircle, color: 'indigo', change: 7 },
+    { title: 'Total Leads', value: stats.totalLeads, icon: Target, color: 'indigo' },
+    { title: 'New Leads', value: stats.newLeads, icon: TrendingUp, color: 'blue' },
+    { title: 'Total Customers', value: stats.totalCustomers, icon: UserCheck, color: 'green' },
+    { title: 'Active Deals', value: stats.activeDeals, icon: Handshake, color: 'purple' },
+    { title: 'Won Deals', value: stats.wonDeals, icon: Trophy, color: 'amber' },
+    { title: 'Lost Deals', value: stats.lostDeals, icon: XCircle, color: 'red' },
+    { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'green' },
+    { title: 'Pending Tasks', value: stats.pendingTasks, icon: CheckSquare, color: 'orange' },
+    { title: 'Follow-ups Today', value: stats.followUpsToday, icon: Phone, color: 'cyan' },
+    { title: 'Qualified Leads', value: stats.qualifiedLeads, icon: AlertCircle, color: 'indigo' },
   ];
 
   return (
