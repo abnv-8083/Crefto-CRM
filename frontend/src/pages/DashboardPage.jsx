@@ -264,7 +264,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Revenue by rep */}
-      {revenueByRep.length > 0 && (
+      {(loading || revenueByRep.length > 0) && (
         <Card padding="p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -370,7 +370,16 @@ const DashboardPage = () => {
               </button>
             </div>
             <div className="divide-y divide-slate-50">
-              {(widgets.todayTasks || []).slice(0, 3).map(task => (
+              {loading ? [...Array(3)].map((_, i) => (
+                <div key={i} className="px-5 py-3 flex gap-3 items-center">
+                  <Skeleton className="w-2 h-2 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3 w-3/4" />
+                    <Skeleton className="h-2 w-1/4" />
+                  </div>
+                  <Skeleton className="w-16 h-5 rounded-full" />
+                </div>
+              )) : (widgets.todayTasks || []).slice(0, 3).map(task => (
                 <div key={task._id} className="px-5 py-3 flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                     task.priority === 'Urgent' ? 'bg-red-500' :
@@ -384,7 +393,7 @@ const DashboardPage = () => {
                   <StatusBadge status={task.status} />
                 </div>
               ))}
-              {!widgets.todayTasks?.length && (
+              {!loading && !widgets.todayTasks?.length && (
                 <p className="px-5 py-5 text-center text-sm text-slate-400">No tasks due today</p>
               )}
             </div>
@@ -399,7 +408,15 @@ const DashboardPage = () => {
               </button>
             </div>
             <div className="divide-y divide-slate-50">
-              {(widgets.recentWonDeals || []).slice(0, 3).map(deal => (
+              {loading ? [...Array(3)].map((_, i) => (
+                <div key={i} className="px-5 py-3">
+                  <div className="flex justify-between mb-2">
+                    <Skeleton className="h-3 w-2/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-2 w-1/2" />
+                </div>
+              )) : (widgets.recentWonDeals || []).slice(0, 3).map(deal => (
                 <div key={deal._id} className="px-5 py-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-slate-800 truncate flex-1 mr-2">{deal.name}</p>
@@ -408,7 +425,7 @@ const DashboardPage = () => {
                   <p className="text-xs text-slate-400 mt-0.5">{deal.customer?.name} • {deal.assignedTo?.firstName}</p>
                 </div>
               ))}
-              {!widgets.recentWonDeals?.length && (
+              {!loading && !widgets.recentWonDeals?.length && (
                 <p className="px-5 py-5 text-center text-sm text-slate-400">No won deals yet</p>
               )}
             </div>
@@ -417,7 +434,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Upcoming follow-ups */}
-      {(widgets.upcomingFollowUps || []).length > 0 && (
+      {(loading || (widgets.upcomingFollowUps || []).length > 0) && (
         <Card padding="">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 className="font-semibold text-slate-800">Upcoming Follow-ups</h2>
@@ -426,7 +443,16 @@ const DashboardPage = () => {
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 divide-y sm:divide-y-0 divide-slate-50">
-            {widgets.upcomingFollowUps.slice(0, 6).map(fu => (
+            {loading ? [...Array(3)].map((_, i) => (
+              <div key={i} className="px-5 py-4 flex items-start gap-3 border-b border-slate-50 sm:border-r last:border-r-0">
+                <Skeleton className="w-9 h-9 rounded-xl flex-shrink-0" />
+                <div className="w-full space-y-2 pt-1">
+                  <Skeleton className="h-3 w-3/4" />
+                  <Skeleton className="h-2 w-1/2" />
+                  <Skeleton className="h-2 w-1/3 mt-2" />
+                </div>
+              </div>
+            )) : widgets.upcomingFollowUps.slice(0, 6).map(fu => (
               <div key={fu._id} className="px-5 py-4 flex items-start gap-3 border-b border-slate-50 sm:border-r last:border-r-0">
                 <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center text-base flex-shrink-0">📅</div>
                 <div className="min-w-0">
