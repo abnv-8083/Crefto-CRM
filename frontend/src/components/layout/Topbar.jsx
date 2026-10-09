@@ -252,7 +252,7 @@ const Topbar = ({ onMenuClick, collapsed, onToggleCollapse }) => {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-800">{d.name}</p>
-                      <p className="text-xs text-slate-400">${d.value?.toLocaleString()} • {d.stage}</p>
+                      <p className="text-xs text-slate-400">₹{d.value?.toLocaleString()} • {d.stage}</p>
                     </div>
                   </button>
                 ))}
