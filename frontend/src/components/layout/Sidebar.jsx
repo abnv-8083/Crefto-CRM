@@ -76,14 +76,14 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 flex flex-col
+        fixed top-0 left-0 h-full bg-white border-r border-slate-200 z-50 flex flex-col
         transition-[width,transform] duration-300 ease-in-out select-none
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0 lg:static lg:flex
         ${collapsed ? 'w-64 lg:w-20' : 'w-64'}
       `}>
         {/* Header: logo + collapse control + mobile close */}
-        <div className={`h-16 border-b border-slate-200 dark:border-slate-800 flex items-center flex-shrink-0 ${
+        <div className={`h-16 border-b border-slate-200 flex items-center flex-shrink-0 ${
           collapsed ? 'justify-center px-2' : 'justify-between px-3.5'
         }`}>
           {!collapsed ? (
@@ -98,13 +98,13 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                   onClick={onToggleCollapse}
                   aria-label="Collapse sidebar"
                   title="Collapse sidebar (Ctrl+B)"
-                  className="hidden lg:flex p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                  className="hidden lg:flex p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 >
                   <PanelLeftClose className="w-4 h-4" />
                 </button>
                 <button
                   onClick={onClose}
-                  className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+                  className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                   title="Close sidebar"
                   aria-label="Close sidebar"
                 >
@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
 
         {/* Optional Company Subheader */}
         {!collapsed && user?.company?.name && (
-          <div className="px-3.5 py-1.5 border-b border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-950/20">
+          <div className="px-3.5 py-1.5 border-b border-slate-200 bg-slate-50">
             <p className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider truncate">
               {user.company.name}
             </p>
@@ -146,7 +146,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                     {group.label}
                   </p>
                 ) : (
-                  groupIndex > 0 && <div className="w-6 h-px bg-slate-200 dark:bg-slate-800 mx-auto my-2" />
+                  groupIndex > 0 && <div className="w-6 h-px bg-slate-200 mx-auto my-2" />
                 )}
 
                 <ul className="space-y-0.5">
@@ -188,7 +188,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                             }
                             ${isActive
                               ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                             }
                           `}
                         >
@@ -198,7 +198,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                           )}
 
                           <Icon className={`w-[18px] h-[18px] flex-shrink-0 ${
-                            isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white'
+                            isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-900'
                           }`} />
 
                           {!collapsed && (
@@ -208,7 +208,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                           {/* Notification dot */}
                           {item.notificationDot && (
                             collapsed ? (
-                              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-400 ring-2 ring-white dark:ring-slate-900" />
+                              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-orange-400 ring-2 ring-white" />
                             ) : (
                               <span className="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0" />
                             )
@@ -226,10 +226,10 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
         {/* Collapsed floating tooltip */}
         {collapsed && hoveredItem && (
           <div
-            className="fixed left-[88px] -translate-y-1/2 px-2.5 py-1.5 bg-white dark:bg-slate-950/95 backdrop-blur-sm text-slate-900 dark:text-slate-100 text-xs font-medium rounded-lg shadow-2xl border border-slate-200 dark:border-slate-700/80 pointer-events-none z-[9999] whitespace-nowrap animate-fadeIn flex items-center gap-2"
+            className="fixed left-[88px] -translate-y-1/2 px-2.5 py-1.5 bg-white backdrop-blur-sm text-slate-900 text-xs font-medium rounded-lg shadow-2xl border border-slate-200 pointer-events-none z-[9999] whitespace-nowrap animate-fadeIn flex items-center gap-2"
             style={{ top: hoveredItem.top }}
           >
-            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-white dark:border-r-slate-950/95" />
+            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-white" />
             <span>{hoveredItem.label}</span>
             {hoveredItem.hasDot && (
               <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
@@ -238,15 +238,15 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
         )}
 
         {/* Footer: user profile + collapse toggle */}
-        <div className="border-t border-slate-200 dark:border-slate-800 p-2 flex-shrink-0">
+        <div className="border-t border-slate-200 p-2 flex-shrink-0">
           {!collapsed ? (
             <div className="space-y-1">
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100 transition-colors">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-sm">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-slate-900 dark:text-white text-sm font-medium truncate">
+                  <p className="text-slate-900 text-sm font-medium truncate">
                     {user?.firstName} {user?.lastName}
                   </p>
                   <p className="text-slate-400 text-xs truncate capitalize">
@@ -259,11 +259,11 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                 onClick={onToggleCollapse}
                 aria-label="Collapse sidebar"
                 title="Collapse sidebar (Ctrl+B)"
-                className="hidden lg:flex items-center gap-2 w-full px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors text-xs font-medium cursor-pointer"
+                className="hidden lg:flex items-center gap-2 w-full px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors text-xs font-medium cursor-pointer"
               >
                 <PanelLeftClose className="w-4 h-4 flex-shrink-0" />
                 <span className="truncate">Collapse sidebar</span>
-                <kbd className="ml-auto text-[10px] font-sans px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700/60">
+                <kbd className="ml-auto text-[10px] font-sans px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
                   Ctrl+B
                 </kbd>
               </button>
@@ -288,7 +288,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                 onClick={onToggleCollapse}
                 aria-label="Expand sidebar"
                 title="Expand sidebar (Ctrl+B)"
-                className="hidden lg:flex p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors items-center justify-center cursor-pointer"
+                className="hidden lg:flex p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors items-center justify-center cursor-pointer"
               >
                 <PanelLeftOpen className="w-4 h-4" />
               </button>
