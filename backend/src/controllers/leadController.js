@@ -32,7 +32,13 @@ exports.getLeads = async (req, res, next) => {
 
     // Only show own leads for sales_rep
     if (req.user.role === 'sales_rep') {
-      filter.assignedTo = req.user._id;
+      const userCondition = { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, userCondition];
+        delete filter.$or;
+      } else {
+        filter.$or = userCondition.$or;
+      }
     }
 
     // Date filter
@@ -85,6 +91,14 @@ exports.getLead = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Lead not found' });
     }
 
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (lead.assignedTo && lead.assignedTo._id.toString() === req.user._id.toString()) || 
+                      (lead.createdBy && lead.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to access this lead' });
+      }
+    }
+
     // Get activities
     const activities = await Activity.find({ relatedLead: lead._id })
       .populate('performedBy', 'firstName lastName avatar')
@@ -104,6 +118,10 @@ exports.createLead = async (req, res, next) => {
   try {
     req.body.company_ref = req.user.company._id;
     req.body.createdBy = req.user._id;
+    
+    if (req.user.role === 'sales_rep') {
+      req.body.assignedTo = req.user._id;
+    }
 
     const lead = await Lead.create(req.body);
 
@@ -144,6 +162,14 @@ exports.updateLead = async (req, res, next) => {
     const existingLead = await Lead.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!existingLead) {
       return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (existingLead.assignedTo && existingLead.assignedTo.toString() === req.user._id.toString()) || 
+                      (existingLead.createdBy && existingLead.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to update this lead' });
+      }
     }
 
     const previousStatus = existingLead.status;
@@ -192,6 +218,14 @@ exports.deleteLead = async (req, res, next) => {
     const lead = await Lead.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!lead) {
       return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (lead.assignedTo && lead.assignedTo.toString() === req.user._id.toString()) || 
+                      (lead.createdBy && lead.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this lead' });
+      }
     }
     await lead.deleteOne();
     res.status(200).json({ success: true, message: 'Lead deleted successfully' });

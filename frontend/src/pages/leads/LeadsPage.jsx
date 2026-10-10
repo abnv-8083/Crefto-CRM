@@ -28,7 +28,7 @@ const STAGE_COLORS = {
 };
 
 // Lead form component
-const LeadForm = ({ lead, onSubmit, onClose, users, loading }) => {
+const LeadForm = ({ lead, onSubmit, onClose, users, loading, user }) => {
   const [formData, setFormData] = useState({
     firstName: lead?.firstName || '',
     lastName: lead?.lastName || '',
@@ -97,11 +97,13 @@ const LeadForm = ({ lead, onSubmit, onClose, users, loading }) => {
           <option value="">Select Industry</option>
           {INDUSTRIES.map(i => <option key={i}>{i}</option>)}
         </Select>
-        <Select label="Assigned To" value={formData.assignedTo}
-          onChange={(e) => setFormData(p => ({ ...p, assignedTo: e.target.value }))}>
-          <option value="">Unassigned</option>
-          {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
-        </Select>
+        {user?.role !== 'sales_rep' && (
+          <Select label="Assigned To" value={formData.assignedTo}
+            onChange={(e) => setFormData(p => ({ ...p, assignedTo: e.target.value }))}>
+            <option value="">Unassigned</option>
+            {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
+          </Select>
+        )}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Input label="Expected Value ($)" type="number" value={formData.expectedValue}
@@ -509,6 +511,7 @@ const LeadsPage = () => {
           onClose={() => { setShowModal(false); setEditingLead(null); }}
           users={users}
           loading={formLoading}
+          user={user}
         />
       </Modal>
 
