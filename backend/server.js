@@ -101,10 +101,15 @@ app.use((req, res) => {
 // Error handler
 app.use(errorHandler);
 
+const http = require('http');
+const { initWebSocketServer } = require('./src/websocket');
+
 let server;
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
-  server = app.listen(PORT, () => {
+  server = http.createServer(app);
+  initWebSocketServer(server);
+  server.listen(PORT, () => {
     console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
     console.log(`🔗 Health check: http://localhost:${PORT}/health`);
   });
