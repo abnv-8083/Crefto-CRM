@@ -170,6 +170,7 @@ exports.updateLead = async (req, res, next) => {
       if (!isOwner) {
         return res.status(403).json({ success: false, message: 'Not authorized to update this lead' });
       }
+      delete req.body.assignedTo;
     }
 
     const previousStatus = existingLead.status;
@@ -257,7 +258,7 @@ exports.convertLead = async (req, res, next) => {
       industry: lead.industry,
       notes: lead.notes,
       tags: lead.tags,
-      assignedTo: lead.assignedTo,
+      assignedTo: lead.assignedTo || (req.user.role === 'sales_rep' ? req.user._id : undefined),
       leadId: lead._id,
       company_ref: req.user.company._id,
       createdBy: req.user._id,
@@ -277,7 +278,7 @@ exports.convertLead = async (req, res, next) => {
         name: req.body.dealName || `Deal with ${customer.name}`,
         customer: customer._id,
         value: lead.expectedValue,
-        assignedTo: lead.assignedTo,
+        assignedTo: lead.assignedTo || (req.user.role === 'sales_rep' ? req.user._id : undefined),
         leadId: lead._id,
         company_ref: req.user.company._id,
         createdBy: req.user._id,
@@ -335,6 +336,9 @@ exports.addLeadActivity = async (req, res, next) => {
 exports.bulkUpdateLeads = async (req, res, next) => {
   try {
     const { ids, updates } = req.body;
+    if (req.user.role === 'sales_rep') {
+      delete updates.assignedTo;
+    }
     await Lead.updateMany(
       { _id: { $in: ids }, ...req.companyFilter },
       { ...updates, updatedBy: req.user._id }

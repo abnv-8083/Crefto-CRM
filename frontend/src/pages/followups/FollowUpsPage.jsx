@@ -7,8 +7,9 @@ import {
   Modal, Input, Select, Textarea, formatDate, ConfirmDialog, Skeleton, Tabs
 } from '../../components/ui';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
-const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading }) => {
+const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading, user }) => {
   const [f, setF] = useState({
     title: followUp?.title || '', notes: followUp?.notes || '',
     scheduledAt: followUp?.scheduledAt ? new Date(followUp.scheduledAt).toISOString().slice(0, 16) : '',
@@ -17,7 +18,13 @@ const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading }) => {
     status: followUp?.status || 'Pending',
   });
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, assignedTo: f.assignedTo || null }); }} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const assignedTo = user?.role === 'sales_rep'
+        ? (followUp?.assignedTo?._id || followUp?.assignedTo || user?._id || null)
+        : (f.assignedTo || null);
+      onSubmit({ ...f, assignedTo });
+    }} className="space-y-4">
       <Input label="Follow-up Title" required value={f.title} onChange={(e) => setF(p => ({ ...p, title: e.target.value }))} placeholder="Call with prospect..." />
       <div className="grid grid-cols-2 gap-4">
         <Select label="Type" value={f.type} onChange={(e) => setF(p => ({ ...p, type: e.target.value }))}>
@@ -27,10 +34,12 @@ const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading }) => {
           {['Pending', 'Completed', 'Rescheduled', 'Cancelled'].map(s => <option key={s}>{s}</option>)}
         </Select>
         <Input label="Scheduled Date & Time" type="datetime-local" required value={f.scheduledAt} onChange={(e) => setF(p => ({ ...p, scheduledAt: e.target.value }))} className="col-span-2" />
-        <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))} className="col-span-2">
-          <option value="">Unassigned</option>
-          {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
-        </Select>
+        {user?.role !== 'sales_rep' && (
+          <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))} className="col-span-2">
+            <option value="">Unassigned</option>
+            {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
+          </Select>
+        )}
       </div>
       <Textarea label="Notes" value={f.notes} rows={3} onChange={(e) => setF(p => ({ ...p, notes: e.target.value }))} />
       <div className="flex justify-end gap-3">
@@ -42,6 +51,7 @@ const FollowUpForm = ({ followUp, onSubmit, onClose, users, loading }) => {
 };
 
 const FollowUpsPage = () => {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [followUps, setFollowUps] = useState([]);
   const [users, setUsers] = useState([]);
@@ -162,7 +172,7 @@ const FollowUpsPage = () => {
       <Modal isOpen={showModal || !!editing} onClose={() => { setShowModal(false); setEditing(null); }}
         title={editing ? 'Edit Follow-up' : 'Schedule Follow-up'} size="md">
         <FollowUpForm followUp={editing} onSubmit={editing ? handleUpdate : handleCreate}
-          onClose={() => { setShowModal(false); setEditing(null); }} users={users} loading={formLoading} />
+          onClose={() => { setShowModal(false); setEditing(null); }} users={users} loading={formLoading} user={user} />
       </Modal>
       <ConfirmDialog isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={handleDelete}
         title="Delete Follow-up" message={`Delete "${deleteConfirm?.title}"?`} />

@@ -6,7 +6,15 @@ exports.getFollowUps = async (req, res, next) => {
     const filter = { ...req.companyFilter };
     if (req.query.status) filter.status = req.query.status;
     if (req.query.assignedTo) filter.assignedTo = req.query.assignedTo;
-    if (req.user.role === 'sales_rep') filter.assignedTo = req.user._id;
+    if (req.user.role === 'sales_rep') {
+      const userCondition = { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, userCondition];
+        delete filter.$or;
+      } else {
+        filter.$or = userCondition.$or;
+      }
+    }
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -56,6 +64,11 @@ exports.createFollowUp = async (req, res, next) => {
   try {
     req.body.company_ref = req.user.company._id;
     req.body.createdBy = req.user._id;
+
+    if (req.user.role === 'sales_rep') {
+      req.body.assignedTo = req.user._id;
+    }
+
     const followUp = await FollowUp.create(req.body);
 
     if (followUp.assignedTo && followUp.assignedTo.toString() !== req.user._id.toString()) {
@@ -79,6 +92,15 @@ exports.updateFollowUp = async (req, res, next) => {
     const followUp = await FollowUp.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!followUp) return res.status(404).json({ success: false, message: 'Follow-up not found' });
 
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (followUp.assignedTo && followUp.assignedTo.toString() === req.user._id.toString()) || 
+                      (followUp.createdBy && followUp.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to update this follow-up' });
+      }
+      delete req.body.assignedTo;
+    }
+
     if (req.body.status === 'Completed' && followUp.status !== 'Completed') {
       req.body.completedAt = new Date();
     }
@@ -98,6 +120,15 @@ exports.deleteFollowUp = async (req, res, next) => {
   try {
     const followUp = await FollowUp.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!followUp) return res.status(404).json({ success: false, message: 'Follow-up not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (followUp.assignedTo && followUp.assignedTo.toString() === req.user._id.toString()) || 
+                      (followUp.createdBy && followUp.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this follow-up' });
+      }
+    }
+
     await followUp.deleteOne();
     res.status(200).json({ success: true, message: 'Follow-up deleted' });
   } catch (error) { next(error); }

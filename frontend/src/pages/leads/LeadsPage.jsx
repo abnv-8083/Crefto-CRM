@@ -56,7 +56,7 @@ const LeadForm = ({ lead, onSubmit, onClose, users, loading, user }) => {
       expectedValue: parseFloat(formData.expectedValue) || 0,
       score: parseInt(formData.score) || 0,
       tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-      assignedTo: formData.assignedTo || null,
+      assignedTo: user?.role === 'sales_rep' ? (lead?.assignedTo?._id || lead?.assignedTo || user?._id || null) : (formData.assignedTo || null),
     };
     onSubmit(data);
   };

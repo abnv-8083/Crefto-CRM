@@ -7,6 +7,7 @@ import {
   Input, Select, Textarea, formatCurrency, formatDate, ConfirmDialog, Skeleton, StatCard, StatCardSkeleton
 } from '../../components/ui';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 const STAGES = ['New', 'Qualification', 'Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost'];
 
@@ -90,7 +91,7 @@ const KanbanColumn = ({ stage, deals, onEdit, onDelete, onMoveStage, config }) =
   );
 };
 
-const DealForm = ({ deal, onSubmit, onClose, customers, users, loading }) => {
+const DealForm = ({ deal, onSubmit, onClose, customers, users, loading, user }) => {
   const [f, setF] = useState({
     name: deal?.name || '',
     customer: deal?.customer?._id || deal?.customer || '',
@@ -105,7 +106,13 @@ const DealForm = ({ deal, onSubmit, onClose, customers, users, loading }) => {
   });
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, value: parseFloat(f.value) || 0, probability: parseInt(f.probability), assignedTo: f.assignedTo || null, customer: f.customer || null }); }} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const assignedTo = user?.role === 'sales_rep'
+        ? (deal?.assignedTo?._id || deal?.assignedTo || user?._id || null)
+        : (f.assignedTo || null);
+      onSubmit({ ...f, value: parseFloat(f.value) || 0, probability: parseInt(f.probability), assignedTo, customer: f.customer || null });
+    }} className="space-y-4">
       <Input label="Deal Name" required value={f.name} onChange={(e) => setF(p => ({ ...p, name: e.target.value }))} placeholder="e.g., Enterprise License Q4" />
       <div className="grid grid-cols-2 gap-4">
         <Select label="Customer" value={f.customer} onChange={(e) => setF(p => ({ ...p, customer: e.target.value }))}>
@@ -120,11 +127,13 @@ const DealForm = ({ deal, onSubmit, onClose, customers, users, loading }) => {
           <label className="block text-sm font-medium text-slate-700 mb-1.5">Probability: {f.probability}%</label>
           <input type="range" min="0" max="100" value={f.probability} onChange={(e) => setF(p => ({ ...p, probability: e.target.value }))} className="w-full accent-indigo-600" />
         </div>
-        <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
-          <option value="">Unassigned</option>
-          {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
-        </Select>
-        <Input label="Expected Close Date" type="date" value={f.expectedClosingDate} onChange={(e) => setF(p => ({ ...p, expectedClosingDate: e.target.value }))} />
+        {user?.role !== 'sales_rep' && (
+          <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
+            <option value="">Unassigned</option>
+            {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
+          </Select>
+        )}
+        <Input label="Expected Close Date" type="date" value={f.expectedClosingDate} onChange={(e) => setF(p => ({ ...p, expectedClosingDate: e.target.value }))} className={user?.role === 'sales_rep' ? 'col-span-2' : ''} />
         <Input label="Source" value={f.source} onChange={(e) => setF(p => ({ ...p, source: e.target.value }))} placeholder="Website, Referral..." className="col-span-2" />
       </div>
       {f.stage === 'Closed Lost' && (
@@ -140,6 +149,7 @@ const DealForm = ({ deal, onSubmit, onClose, customers, users, loading }) => {
 };
 
 const DealsPage = () => {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [deals, setDeals] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -243,7 +253,7 @@ const DealsPage = () => {
         title={editingDeal ? `Edit Deal — ${editingDeal.name}` : 'New Deal'} size="lg">
         <DealForm deal={editingDeal} onSubmit={editingDeal ? handleUpdate : handleCreate}
           onClose={() => { setShowModal(false); setEditingDeal(null); }}
-          customers={customers} users={users} loading={formLoading} />
+          customers={customers} users={users} loading={formLoading} user={user} />
       </Modal>
 
       <ConfirmDialog isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={handleDelete}

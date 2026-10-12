@@ -12,7 +12,15 @@ exports.getTasks = async (req, res, next) => {
     if (req.query.status) filter.status = req.query.status;
     if (req.query.priority) filter.priority = req.query.priority;
     if (req.query.assignedTo) filter.assignedTo = req.query.assignedTo;
-    if (req.user.role === 'sales_rep') filter.assignedTo = req.user._id;
+    if (req.user.role === 'sales_rep') {
+      const userCondition = { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, userCondition];
+        delete filter.$or;
+      } else {
+        filter.$or = userCondition.$or;
+      }
+    }
 
     if (req.query.startDate || req.query.endDate) {
       filter.dueDate = {};
@@ -47,6 +55,14 @@ exports.getTask = async (req, res, next) => {
       .populate('relatedCustomer', 'name')
       .populate('relatedDeal', 'name stage');
     if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (task.assignedTo && task.assignedTo._id.toString() === req.user._id.toString()) || 
+                      (task.createdBy && task.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to access this task' });
+      }
+    }
     res.status(200).json({ success: true, data: task });
   } catch (error) { next(error); }
 };
@@ -55,6 +71,11 @@ exports.createTask = async (req, res, next) => {
   try {
     req.body.company_ref = req.user.company._id;
     req.body.createdBy = req.user._id;
+
+    if (req.user.role === 'sales_rep') {
+      req.body.assignedTo = req.user._id;
+    }
+
     const task = await Task.create(req.body);
 
     if (task.assignedTo && task.assignedTo.toString() !== req.user._id.toString()) {
@@ -78,6 +99,15 @@ exports.updateTask = async (req, res, next) => {
     const task = await Task.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
 
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (task.assignedTo && task.assignedTo.toString() === req.user._id.toString()) || 
+                      (task.createdBy && task.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to update this task' });
+      }
+      delete req.body.assignedTo;
+    }
+
     if (req.body.status === 'Completed' && task.status !== 'Completed') {
       req.body.completedAt = new Date();
     }
@@ -94,6 +124,15 @@ exports.deleteTask = async (req, res, next) => {
   try {
     const task = await Task.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (task.assignedTo && task.assignedTo.toString() === req.user._id.toString()) || 
+                      (task.createdBy && task.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this task' });
+      }
+    }
+
     await task.deleteOne();
     res.status(200).json({ success: true, message: 'Task deleted' });
   } catch (error) { next(error); }

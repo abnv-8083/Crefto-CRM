@@ -19,7 +19,15 @@ exports.getCustomers = async (req, res, next) => {
     if (req.query.status) filter.status = req.query.status;
     if (req.query.customerType) filter.customerType = req.query.customerType;
     if (req.query.assignedTo) filter.assignedTo = req.query.assignedTo;
-    if (req.user.role === 'sales_rep') filter.assignedTo = req.user._id;
+    if (req.user.role === 'sales_rep') {
+      const userCondition = { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, userCondition];
+        delete filter.$or;
+      } else {
+        filter.$or = userCondition.$or;
+      }
+    }
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
@@ -46,6 +54,14 @@ exports.getCustomer = async (req, res, next) => {
 
     if (!customer) return res.status(404).json({ success: false, message: 'Customer not found' });
 
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (customer.assignedTo && customer.assignedTo._id.toString() === req.user._id.toString()) || 
+                      (customer.createdBy && customer.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to access this customer' });
+      }
+    }
+
     const [activities, deals, tasks] = await Promise.all([
       Activity.find({ relatedCustomer: customer._id })
         .populate('performedBy', 'firstName lastName avatar')
@@ -64,6 +80,11 @@ exports.createCustomer = async (req, res, next) => {
   try {
     req.body.company_ref = req.user.company._id;
     req.body.createdBy = req.user._id;
+
+    if (req.user.role === 'sales_rep') {
+      req.body.assignedTo = req.user._id;
+    }
+
     const customer = await Customer.create(req.body);
     await Activity.create({
       type: 'Customer Created',
@@ -81,6 +102,16 @@ exports.updateCustomer = async (req, res, next) => {
   try {
     const customer = await Customer.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!customer) return res.status(404).json({ success: false, message: 'Customer not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (customer.assignedTo && customer.assignedTo.toString() === req.user._id.toString()) || 
+                      (customer.createdBy && customer.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to update this customer' });
+      }
+      delete req.body.assignedTo;
+    }
+
     req.body.updatedBy = req.user._id;
     const updated = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
       .populate('assignedTo', 'firstName lastName email avatar');
@@ -92,6 +123,15 @@ exports.deleteCustomer = async (req, res, next) => {
   try {
     const customer = await Customer.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!customer) return res.status(404).json({ success: false, message: 'Customer not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (customer.assignedTo && customer.assignedTo.toString() === req.user._id.toString()) || 
+                      (customer.createdBy && customer.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this customer' });
+      }
+    }
+
     await customer.deleteOne();
     res.status(200).json({ success: true, message: 'Customer deleted' });
   } catch (error) { next(error); }

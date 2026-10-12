@@ -7,8 +7,9 @@ import {
   Modal, Input, Select, Textarea, formatCurrency, formatDate, ConfirmDialog, Skeleton, Badge
 } from '../../components/ui';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
-const CustomerForm = ({ customer, onSubmit, onClose, users, loading }) => {
+const CustomerForm = ({ customer, onSubmit, onClose, users, loading, user }) => {
   const [f, setF] = useState({
     name: customer?.name || '', company: customer?.company || '',
     email: customer?.email || '', phone: customer?.phone || '',
@@ -21,7 +22,13 @@ const CustomerForm = ({ customer, onSubmit, onClose, users, loading }) => {
   });
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo: f.assignedTo || null }); }} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const assignedTo = user?.role === 'sales_rep'
+        ? (customer?.assignedTo?._id || customer?.assignedTo || user?._id || null)
+        : (f.assignedTo || null);
+      onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo });
+    }} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <Input label="Full Name" required value={f.name} onChange={(e) => setF(p => ({ ...p, name: e.target.value }))} placeholder="John Doe" className="col-span-2" />
         <Input label="Company" value={f.company} onChange={(e) => setF(p => ({ ...p, company: e.target.value }))} />
@@ -33,11 +40,13 @@ const CustomerForm = ({ customer, onSubmit, onClose, users, loading }) => {
         <Select label="Status" value={f.status} onChange={(e) => setF(p => ({ ...p, status: e.target.value }))}>
           <option value="active">Active</option><option value="inactive">Inactive</option><option value="churned">Churned</option>
         </Select>
-        <Input label="Industry" value={f.industry} onChange={(e) => setF(p => ({ ...p, industry: e.target.value }))} />
-        <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
-          <option value="">Unassigned</option>
-          {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
-        </Select>
+        <Input label="Industry" value={f.industry} onChange={(e) => setF(p => ({ ...p, industry: e.target.value }))} className={user?.role === 'sales_rep' ? 'col-span-2' : ''} />
+        {user?.role !== 'sales_rep' && (
+          <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
+            <option value="">Unassigned</option>
+            {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
+          </Select>
+        )}
         <Input label="City" value={f.city} onChange={(e) => setF(p => ({ ...p, city: e.target.value }))} />
         <Input label="Country" value={f.country} onChange={(e) => setF(p => ({ ...p, country: e.target.value }))} />
         <Textarea label="Notes" value={f.notes} rows={3} onChange={(e) => setF(p => ({ ...p, notes: e.target.value }))} className="col-span-2" />
@@ -51,6 +60,7 @@ const CustomerForm = ({ customer, onSubmit, onClose, users, loading }) => {
 };
 
 const CustomersPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [customers, setCustomers] = useState([]);
@@ -165,7 +175,7 @@ const CustomersPage = () => {
       <Modal isOpen={showModal || !!editingCustomer} onClose={() => { setShowModal(false); setEditingCustomer(null); }}
         title={editingCustomer ? `Edit — ${editingCustomer.name}` : 'New Customer'} size="lg">
         <CustomerForm customer={editingCustomer} onSubmit={editingCustomer ? handleUpdate : handleCreate}
-          onClose={() => { setShowModal(false); setEditingCustomer(null); }} users={users} loading={formLoading} />
+          onClose={() => { setShowModal(false); setEditingCustomer(null); }} users={users} loading={formLoading} user={user} />
       </Modal>
 
       <ConfirmDialog isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={handleDelete}

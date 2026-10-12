@@ -7,11 +7,12 @@ import {
   Modal, Input, Select, Textarea, formatDate, ConfirmDialog, Skeleton, Tabs
 } from '../../components/ui';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 const PRIORITIES = ['Low', 'Medium', 'High', 'Urgent'];
 const STATUSES = ['Pending', 'In Progress', 'Completed', 'Cancelled'];
 
-const TaskForm = ({ task, onSubmit, onClose, users, loading }) => {
+const TaskForm = ({ task, onSubmit, onClose, users, loading, user }) => {
   const [f, setF] = useState({
     title: task?.title || '', description: task?.description || '',
     assignedTo: task?.assignedTo?._id || task?.assignedTo || '',
@@ -20,7 +21,13 @@ const TaskForm = ({ task, onSubmit, onClose, users, loading }) => {
     tags: task?.tags?.join(', ') || '',
   });
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo: f.assignedTo || null }); }} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const assignedTo = user?.role === 'sales_rep'
+        ? (task?.assignedTo?._id || task?.assignedTo || user?._id || null)
+        : (f.assignedTo || null);
+      onSubmit({ ...f, tags: f.tags.split(',').map(t => t.trim()).filter(Boolean), assignedTo });
+    }} className="space-y-4">
       <Input label="Task Title" required value={f.title} onChange={(e) => setF(p => ({ ...p, title: e.target.value }))} placeholder="Describe the task..." />
       <Textarea label="Description" value={f.description} rows={3} onChange={(e) => setF(p => ({ ...p, description: e.target.value }))} />
       <div className="grid grid-cols-2 gap-4">
@@ -30,11 +37,13 @@ const TaskForm = ({ task, onSubmit, onClose, users, loading }) => {
         <Select label="Status" value={f.status} onChange={(e) => setF(p => ({ ...p, status: e.target.value }))}>
           {STATUSES.map(s => <option key={s}>{s}</option>)}
         </Select>
-        <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
-          <option value="">Unassigned</option>
-          {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
-        </Select>
-        <Input label="Due Date" type="date" value={f.dueDate} onChange={(e) => setF(p => ({ ...p, dueDate: e.target.value }))} />
+        {user?.role !== 'sales_rep' && (
+          <Select label="Assigned To" value={f.assignedTo} onChange={(e) => setF(p => ({ ...p, assignedTo: e.target.value }))}>
+            <option value="">Unassigned</option>
+            {users.map(u => <option key={u._id} value={u._id}>{u.firstName} {u.lastName}</option>)}
+          </Select>
+        )}
+        <Input label="Due Date" type="date" value={f.dueDate} onChange={(e) => setF(p => ({ ...p, dueDate: e.target.value }))} className={user?.role === 'sales_rep' ? 'col-span-2' : ''} />
       </div>
       <div className="flex justify-end gap-3">
         <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>
@@ -91,6 +100,7 @@ const TaskKanban = ({ tasks, onEdit, onComplete, onDelete }) => {
 };
 
 const TasksPage = () => {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
@@ -230,7 +240,7 @@ const TasksPage = () => {
 
       <Modal isOpen={showModal || !!editing} onClose={() => { setShowModal(false); setEditing(null); }} title={editing ? 'Edit Task' : 'New Task'} size="md">
         <TaskForm task={editing} onSubmit={editing ? handleUpdate : handleCreate}
-          onClose={() => { setShowModal(false); setEditing(null); }} users={users} loading={formLoading} />
+          onClose={() => { setShowModal(false); setEditing(null); }} users={users} loading={formLoading} user={user} />
       </Modal>
       <ConfirmDialog isOpen={!!deleteConfirm} onClose={() => setDeleteConfirm(null)} onConfirm={handleDelete}
         title="Delete Task" message={`Delete "${deleteConfirm?.title}"?`} />

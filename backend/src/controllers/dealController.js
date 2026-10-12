@@ -14,7 +14,15 @@ exports.getDeals = async (req, res, next) => {
     }
     if (req.query.stage) filter.stage = req.query.stage;
     if (req.query.assignedTo) filter.assignedTo = req.query.assignedTo;
-    if (req.user.role === 'sales_rep') filter.assignedTo = req.user._id;
+    if (req.user.role === 'sales_rep') {
+      const userCondition = { $or: [{ assignedTo: req.user._id }, { createdBy: req.user._id }] };
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, userCondition];
+        delete filter.$or;
+      } else {
+        filter.$or = userCondition.$or;
+      }
+    }
     if (req.query.startDate || req.query.endDate) {
       filter.createdAt = {};
       if (req.query.startDate) filter.createdAt.$gte = new Date(req.query.startDate);
@@ -60,6 +68,14 @@ exports.getDeal = async (req, res, next) => {
 
     if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
 
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (deal.assignedTo && deal.assignedTo._id.toString() === req.user._id.toString()) || 
+                      (deal.createdBy && deal.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to access this deal' });
+      }
+    }
+
     const activities = await Activity.find({ relatedDeal: deal._id })
       .populate('performedBy', 'firstName lastName avatar')
       .sort({ createdAt: -1 });
@@ -72,6 +88,11 @@ exports.createDeal = async (req, res, next) => {
   try {
     req.body.company_ref = req.user.company._id;
     req.body.createdBy = req.user._id;
+
+    if (req.user.role === 'sales_rep') {
+      req.body.assignedTo = req.user._id;
+    }
+
     const deal = await Deal.create(req.body);
 
     await Activity.create({
@@ -92,6 +113,15 @@ exports.updateDeal = async (req, res, next) => {
   try {
     const existing = await Deal.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!existing) return res.status(404).json({ success: false, message: 'Deal not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (existing.assignedTo && existing.assignedTo.toString() === req.user._id.toString()) || 
+                      (existing.createdBy && existing.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to update this deal' });
+      }
+      delete req.body.assignedTo;
+    }
 
     const previousStage = existing.stage;
     req.body.updatedBy = req.user._id;
@@ -153,6 +183,15 @@ exports.deleteDeal = async (req, res, next) => {
   try {
     const deal = await Deal.findOne({ _id: req.params.id, ...req.companyFilter });
     if (!deal) return res.status(404).json({ success: false, message: 'Deal not found' });
+
+    if (req.user.role === 'sales_rep') {
+      const isOwner = (deal.assignedTo && deal.assignedTo.toString() === req.user._id.toString()) || 
+                      (deal.createdBy && deal.createdBy.toString() === req.user._id.toString());
+      if (!isOwner) {
+        return res.status(403).json({ success: false, message: 'Not authorized to delete this deal' });
+      }
+    }
+
     await deal.deleteOne();
     res.status(200).json({ success: true, message: 'Deal deleted' });
   } catch (error) { next(error); }
