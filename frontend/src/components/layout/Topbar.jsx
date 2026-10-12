@@ -279,8 +279,8 @@ const Topbar = ({ onMenuClick, collapsed, onToggleCollapse }) => {
         <div ref={quickAddRef} className="relative">
           <button
             onClick={() => setShowQuickAdd(!showQuickAdd)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium
-                       hover:bg-indigo-700 transition-colors shadow-[0_2px_8px_rgba(79,70,229,0.25)] hover:shadow-[0_4px_12px_rgba(79,70,229,0.35)]"
+            className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium
+                       hover:bg-emerald-700 transition-colors shadow-[0_2px_8px_rgba(5,150,105,0.25)] hover:shadow-[0_4px_12px_rgba(5,150,105,0.35)]"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:block">Quick Add</span>
@@ -324,7 +324,7 @@ const Topbar = ({ onMenuClick, collapsed, onToggleCollapse }) => {
                 <h3 className="font-semibold text-slate-800">Notifications</h3>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
-                    <button onClick={handleMarkAllRead} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">
+                    <button onClick={handleMarkAllRead} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
                       Mark all read
                     </button>
                   )}

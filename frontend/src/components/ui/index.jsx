@@ -129,9 +129,9 @@ export const KanbanCard = ({ title, subtitle, status, assignee, date, color = 'i
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl border border-slate-200 border-l-4 ${borderColors[color] || 'border-l-indigo-500'} p-4 cursor-pointer hover:shadow-md hover:border-indigo-200 transition-all duration-200 group`}
+      className={`bg-white rounded-xl border border-slate-200 border-l-4 ${borderColors[color] || 'border-l-emerald-500'} p-4 cursor-pointer hover:shadow-md hover:border-emerald-200 transition-all duration-200 group`}
     >
-      <p className="text-sm font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors line-clamp-2 mb-2">{title}</p>
+      <p className="text-sm font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors line-clamp-2 mb-2">{title}</p>
       {subtitle && <p className="text-xs text-slate-400 mb-3 line-clamp-1">{subtitle}</p>}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
@@ -205,14 +205,14 @@ export const Button = ({
   onClick, disabled, loading, type = 'button', icon: Icon, className = ''
 }) => {
   const variants = {
-    primary:   'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-200/50 disabled:bg-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+    primary:   'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm shadow-emerald-200/50 disabled:bg-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2',
     secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2',
     danger:    'bg-red-600 text-white hover:bg-red-700 shadow-sm shadow-red-200/50 disabled:bg-red-300 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2',
     success:   'bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2',
     outline:   'border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2',
     ghost:     'text-slate-600 hover:bg-slate-100 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2',
     'icon-only': 'p-2 text-slate-500 hover:bg-slate-100 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2',
-    link:      'text-indigo-600 hover:underline underline-offset-2 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+    link:      'text-emerald-600 hover:underline underline-offset-2 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2',
   };
 
   const sizes = {
@@ -253,7 +253,7 @@ export const Input = ({ label, error, required, className = '', ...props }) => (
       </label>
     )}
     <input
-      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent
         ${error ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
       {...props}
     />
@@ -270,7 +270,7 @@ export const Select = ({ label, error, required, children, className = '', ...pr
       </label>
     )}
     <select
-      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white
+      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent appearance-none bg-white
         ${error ? 'border-red-300 bg-red-50' : 'border-slate-200 hover:border-slate-300'}`}
       {...props}
     >
@@ -290,7 +290,7 @@ export const Textarea = ({ label, error, required, className = '', rows = 3, ...
     )}
     <textarea
       rows={rows}
-      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+      className={`w-full px-3.5 py-2.5 text-sm border rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none
         ${error ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
       {...props}
     />
@@ -318,7 +318,7 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'md', footer })
           <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

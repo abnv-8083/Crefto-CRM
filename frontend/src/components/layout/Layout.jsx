@@ -50,7 +50,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-slate-100" style={{ flex: '1 1 auto' }}>
+    <div className="flex h-dvh overflow-hidden bg-[#F4F7F5]" style={{ flex: '1 1 auto' }}>
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

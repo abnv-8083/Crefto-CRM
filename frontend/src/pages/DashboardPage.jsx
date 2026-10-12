@@ -15,7 +15,7 @@ import {
 } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 
-const COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+const COLORS = ['#059669', '#0D9488', '#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 const DATE_RANGES = [
   { label: 'Today', value: 'today' },
@@ -97,7 +97,7 @@ const DashboardPage = () => {
   }));
 
   const statCards = [
-    { title: 'Total Leads', value: stats.totalLeads, icon: Target, color: 'indigo' },
+    { title: 'Total Leads', value: stats.totalLeads, icon: Target, color: 'green' },
     { title: 'New Leads', value: stats.newLeads, icon: TrendingUp, color: 'blue' },
     { title: 'Total Customers', value: stats.totalCustomers, icon: UserCheck, color: 'green' },
     { title: 'Active Deals', value: stats.activeDeals, icon: Handshake, color: 'purple' },
@@ -106,7 +106,7 @@ const DashboardPage = () => {
     { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'green' },
     { title: 'Pending Tasks', value: stats.pendingTasks, icon: CheckSquare, color: 'orange' },
     { title: 'Follow-ups Today', value: stats.followUpsToday, icon: Phone, color: 'cyan' },
-    { title: 'Qualified Leads', value: stats.qualifiedLeads, icon: AlertCircle, color: 'indigo' },
+    { title: 'Qualified Leads', value: stats.qualifiedLeads, icon: AlertCircle, color: 'cyan' },
   ];
 
   return (
@@ -128,7 +128,7 @@ const DashboardPage = () => {
             <button key={r.value} onClick={() => setDateRange(r.value)}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-all ${
                 dateRange === r.value
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
               }`}>
               {r.label}
@@ -170,15 +170,15 @@ const DashboardPage = () => {
               <AreaChart data={leadsOverTime}>
                 <defs>
                   <linearGradient id="leadGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366F1" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#059669" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
                 <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: 12 }} />
-                <Area type="monotone" dataKey="count" stroke="#6366F1" strokeWidth={2.5} fill="url(#leadGrad)" dot={false} name="Leads" />
+                <Area type="monotone" dataKey="count" stroke="#059669" strokeWidth={2.5} fill="url(#leadGrad)" dot={false} name="Leads" />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -280,7 +280,7 @@ const DashboardPage = () => {
                   tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#64748B' }} tickLine={false} axisLine={false} width={100} />
                 <Tooltip formatter={(v) => [formatCurrency(v), 'Revenue']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: 12 }} />
-                <Bar dataKey="revenue" fill="#6366F1" radius={[0, 6, 6, 0]} name="Revenue" />
+                <Bar dataKey="revenue" fill="#059669" radius={[0, 6, 6, 0]} name="Revenue" />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -293,7 +293,7 @@ const DashboardPage = () => {
         <Card padding="">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 className="font-semibold text-slate-800">Recent Leads</h2>
-            <button onClick={() => navigate('/leads')} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+            <button onClick={() => navigate('/leads')} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </button>
           </div>
@@ -329,7 +329,7 @@ const DashboardPage = () => {
         <Card padding="">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 className="font-semibold text-slate-800">Recent Activities</h2>
-            <button onClick={() => navigate('/activities')} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+            <button onClick={() => navigate('/activities')} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </button>
           </div>
@@ -365,7 +365,7 @@ const DashboardPage = () => {
           <Card padding="">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h2 className="font-semibold text-slate-800">Today's Tasks</h2>
-              <button onClick={() => navigate('/tasks')} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+              <button onClick={() => navigate('/tasks')} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
                 View all <ArrowRight className="w-3 h-3" />
               </button>
             </div>
@@ -403,7 +403,7 @@ const DashboardPage = () => {
           <Card padding="">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h2 className="font-semibold text-slate-800">Recently Won 🎉</h2>
-              <button onClick={() => navigate('/deals')} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+              <button onClick={() => navigate('/deals')} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
                 View all <ArrowRight className="w-3 h-3" />
               </button>
             </div>
@@ -438,7 +438,7 @@ const DashboardPage = () => {
         <Card padding="">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 className="font-semibold text-slate-800">Upcoming Follow-ups</h2>
-            <button onClick={() => navigate('/follow-ups')} className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+            <button onClick={() => navigate('/follow-ups')} className="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </button>
           </div>
@@ -460,7 +460,7 @@ const DashboardPage = () => {
                   <p className="text-xs text-slate-400 mt-0.5">
                     {fu.relatedLead ? `${fu.relatedLead.firstName} ${fu.relatedLead.lastName}` : fu.relatedCustomer?.name}
                   </p>
-                  <p className="text-xs text-indigo-600 font-medium mt-1">
+                  <p className="text-xs text-emerald-600 font-medium mt-1">
                     <Calendar className="w-3 h-3 inline mr-1" />
                     {new Date(fu.scheduledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>

@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { Card, PageHeader, Skeleton, formatCurrency, StatCard, StatCardSkeleton } from '../../components/ui';
 
-const COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+const COLORS = ['#059669', '#0D9488', '#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 const ReportsPage = () => {
   const [data, setData] = useState(null);
@@ -42,7 +42,7 @@ const ReportsPage = () => {
           <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1">
             {periods.map(p => (
               <button key={p.value} onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${period === p.value ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}>
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${period === p.value ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}>
                 {p.label}
               </button>
             ))}
@@ -55,7 +55,7 @@ const ReportsPage = () => {
         {loading ? [...Array(4)].map((_, i) => <StatCardSkeleton key={i} />) : (
           <>
             <StatCard title="Total Revenue" value={formatCurrency(summary.totalRevenue)} icon={DollarSign} color="green" />
-            <StatCard title="New Leads" value={(summary.newLeads || 0)} icon={Target} color="indigo" />
+            <StatCard title="New Leads" value={(summary.newLeads || 0)} icon={Target} color="green" />
             <StatCard title="New Customers" value={(summary.newCustomers || 0)} icon={Users} color="blue" />
             <StatCard title="Won Deals" value={(summary.wonDeals || 0)} icon={TrendingUp} color="purple" />
           </>
@@ -76,7 +76,7 @@ const ReportsPage = () => {
                 <YAxis tick={{ fontSize: 11, fill: '#94A3B8' }} tickLine={false} axisLine={false}
                   tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v) => [formatCurrency(v), 'Revenue']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} />
-                <Line type="monotone" dataKey="revenue" stroke="#6366F1" strokeWidth={2.5} dot={false} />
+                <Line type="monotone" dataKey="revenue" stroke="#059669" strokeWidth={2.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
@@ -158,7 +158,7 @@ const ReportsPage = () => {
                   tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#64748B' }} tickLine={false} axisLine={false} width={100} />
                 <Tooltip formatter={(v) => [formatCurrency(v), 'Revenue']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="totalRevenue" fill="#6366F1" radius={[0, 6, 6, 0]} name="Revenue" />
+                <Bar dataKey="totalRevenue" fill="#059669" radius={[0, 6, 6, 0]} name="Revenue" />
               </BarChart>
             </ResponsiveContainer>
           )}

@@ -7,19 +7,36 @@
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
 
-  --color-primary-50: #EEF2FF;
-  --color-primary-100: #E0E7FF;
-  --color-primary-200: #C7D2FE;
-  --color-primary-300: #A5B4FC;
-  --color-primary-400: #818CF8;
-  --color-primary-500: #6366F1;
-  --color-primary-600: #4F46E5;
-  --color-primary-700: #4338CA;
-  --color-primary-800: #3730A3;
-  --color-primary-900: #312E81;
+  --color-primary-50:  #ECFDF5;
+  --color-primary-100: #D1FAE5;
+  --color-primary-200: #A7F3D0;
+  --color-primary-300: #6EE7B7;
+  --color-primary-400: #34D399;
+  --color-primary-500: #10B981;
+  --color-primary-600: #059669;
+  --color-primary-700: #047857;
+  --color-primary-800: #065F46;
+  --color-primary-900: #064E3B;
 
-  --color-surface-50:  #F8FAFC;
-  --color-surface-100: #F1F5F9;
+  /* Aliasing indigo utilities to fresh emerald-teal so all existing CRM views adapt */
+  --color-indigo-50:   #ECFDF5;
+  --color-indigo-100:  #D1FAE5;
+  --color-indigo-200:  #A7F3D0;
+  --color-indigo-300:  #6EE7B7;
+  --color-indigo-400:  #34D399;
+  --color-indigo-500:  #10B981;
+  --color-indigo-600:  #059669;
+  --color-indigo-700:  #047857;
+  --color-indigo-800:  #065F46;
+  --color-indigo-900:  #064E3B;
+  --color-indigo-950:  #022C22;
+
+  --color-teal-500:    #14B8A6;
+  --color-teal-600:    #0D9488;
+  --color-teal-700:    #0F766E;
+
+  --color-surface-50:  #F7FAF8;
+  --color-surface-100: #F3F7F5;
   --color-surface-200: #E2E8F0;
   --color-surface-300: #CBD5E1;
   --color-surface-400: #94A3B8;
@@ -54,8 +71,9 @@
   --transition-slow:   300ms ease;
 
   /* Surface tint colors */
-  --color-surface-tint-indigo:  rgba(99,102,241,0.06);
-  --color-surface-tint-emerald: rgba(16,185,129,0.06);
+  --color-surface-tint-indigo:  rgba(5,150,105,0.06);
+  --color-surface-tint-emerald: rgba(5,150,105,0.08);
+  --color-surface-tint-teal:    rgba(13,148,136,0.08);
   --color-surface-tint-amber:   rgba(245,158,11,0.06);
   --color-surface-tint-red:     rgba(239,68,68,0.06);
 }
@@ -75,7 +93,7 @@
 
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #F1F5F9;
+    background-color: #F4F7F5;
     color: #1E293B;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -96,7 +114,7 @@
 
   /* Focus-visible ring */
   :focus-visible {
-    outline: 2px solid #6366F1;
+    outline: 2px solid #059669;
     outline-offset: 2px;
   }
   button:focus:not(:focus-visible),
@@ -155,7 +173,7 @@
     flex-direction: column;
     min-width: 0;
     overflow: hidden;
-    background: #F1F5F9;
+    background: #F4F7F5;
   }
 
   /* ─── Topbar ──────────────────────────────────────── */
@@ -228,9 +246,9 @@
   }
   .nav-item:hover { background: rgba(255,255,255,0.06); color: #CBD5E1; }
   .nav-item.active {
-    background: linear-gradient(135deg, #4F46E5, #6366F1);
+    background: linear-gradient(135deg, #059669, #0D9488);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(79,70,229,0.35);
+    box-shadow: 0 4px 12px rgba(5,150,105,0.30);
   }
 
   /* ─── Tables ──────────────────────────────────────── */
@@ -283,8 +301,8 @@
     white-space: nowrap;
     padding: 8px 14px;
   }
-  .btn-primary { background: #4F46E5; color: #fff; box-shadow: 0 2px 8px rgba(79,70,229,0.25); }
-  .btn-primary:hover { background: #4338CA; box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
+  .btn-primary { background: #059669; color: #fff; box-shadow: 0 2px 8px rgba(5,150,105,0.25); }
+  .btn-primary:hover { background: #047857; box-shadow: 0 4px 12px rgba(5,150,105,0.35); }
   .btn-outline  { background: #fff; color: #475569; border: 1px solid #E2E8F0; }
   .btn-outline:hover  { background: #F8FAFC; border-color: #CBD5E1; }
   .btn-sm { padding: 6px 12px; font-size: 0.75rem; border-radius: 8px; }
@@ -305,7 +323,7 @@
   }
   .input-base::placeholder { color: #94A3B8; }
   .input-base:hover { border-color: #CBD5E1; }
-  .input-base:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+  .input-base:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.12); }
 
   /* ─── Modals ──────────────────────────────────────── */
   .modal-overlay {
@@ -364,7 +382,7 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #A5B4FC; transform: translateY(-1px); }
+  .kanban-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #6EE7B7; transform: translateY(-1px); }
 
   /* ─── Timeline ────────────────────────────────────── */
   .timeline-item { display: flex; gap: 14px; padding-bottom: 20px; }
@@ -374,7 +392,7 @@
   .truncate-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
   .gradient-text {
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    background: linear-gradient(135deg, #059669, #0D9488);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
 
@@ -490,7 +508,7 @@
     color: #475569;
   }
   .chip:hover { background: #E2E8F0; }
-  .chip.active { background: #4F46E5; color: #fff; }
+  .chip.active { background: #059669; color: #fff; }
 
   /* ─── Scrollbar thin utility ─────────────────────── */
   .scrollbar-thin::-webkit-scrollbar { width: 3px; height: 3px; }
@@ -596,9 +614,9 @@
 .dark .after\:bg-white::after { background-color: #F8FAFC; }
 
 /* Status/accent tint backgrounds → dark tints */
-.dark .bg-indigo-50, .dark .hover\:bg-indigo-50:hover { background-color: #1E1B4B; }
-.dark .bg-indigo-100, .dark .hover\:bg-indigo-100:hover, .dark .group-hover\:bg-indigo-100 { background-color: #312E81; }
-.dark .bg-indigo-50\/50 { background-color: rgba(30,27,75,0.5); }
+.dark .bg-indigo-50, .dark .hover\:bg-indigo-50:hover { background-color: #022C22; }
+.dark .bg-indigo-100, .dark .hover\:bg-indigo-100:hover, .dark .group-hover\:bg-indigo-100 { background-color: #064E3B; }
+.dark .bg-indigo-50\/50 { background-color: rgba(2,44,34,0.5); }
 .dark .bg-red-50, .dark .hover\:bg-red-50:hover { background-color: #450A0A; }
 .dark .bg-red-50\/40 { background-color: rgba(69,10,10,0.4); }
 .dark .bg-red-100 { background-color: #7F1D1D; }
@@ -621,9 +639,9 @@
 .dark .bg-yellow-100 { background-color: #713F12; }
 
 /* Status/accent text → lighter steps (400/300 steps are already fine on dark) */
-.dark .text-indigo-500, .dark .text-indigo-600, .dark .group-hover\:text-indigo-600 { color: #818CF8; }
-.dark .text-indigo-700, .dark .hover\:text-indigo-700:hover, .dark .group-hover\:text-indigo-700 { color: #A5B4FC; }
-.dark .text-indigo-800 { color: #C7D2FE; }
+.dark .text-indigo-500, .dark .text-indigo-600, .dark .group-hover\:text-indigo-600 { color: #34D399; }
+.dark .text-indigo-700, .dark .hover\:text-indigo-700:hover, .dark .group-hover\:text-indigo-700 { color: #6EE7B7; }
+.dark .text-indigo-800 { color: #A7F3D0; }
 .dark .text-red-500, .dark .hover\:text-red-500:hover { color: #F87171; }
 .dark .text-red-600, .dark .hover\:text-red-600:hover { color: #F87171; }
 .dark .text-red-700 { color: #FCA5A5; }
@@ -649,8 +667,8 @@
 .dark .border-orange-200 { border-color: #9A3412; }
 .dark .border-green-200 { border-color: #166534; }
 .dark .border-purple-200 { border-color: #6B21A8; }
-.dark .border-indigo-100 { border-color: #312E81; }
-.dark .border-indigo-200, .dark .hover\:border-indigo-200:hover { border-color: #3730A3; }
+.dark .border-indigo-100 { border-color: #064E3B; }
+.dark .border-indigo-200, .dark .hover\:border-indigo-200:hover { border-color: #065F46; }
 
 @media print {
   aside,

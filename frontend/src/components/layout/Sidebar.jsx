@@ -187,7 +187,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                               : 'gap-3 px-3 py-2 justify-start'
                             }
                             ${isActive
-                              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+                              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-600/25'
                               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                             }
                           `}
@@ -242,7 +242,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
           {!collapsed ? (
             <div className="space-y-1">
               <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100 transition-colors">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-sm">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-sm">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -271,7 +271,7 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
           ) : (
             <div className="flex flex-col items-center gap-1.5 py-1">
               <div
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-md cursor-pointer hover:ring-2 hover:ring-indigo-400/50 transition-all"
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 shadow-md cursor-pointer hover:ring-2 hover:ring-emerald-400/50 transition-all"
                 onMouseEnter={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   setHoveredItem({
