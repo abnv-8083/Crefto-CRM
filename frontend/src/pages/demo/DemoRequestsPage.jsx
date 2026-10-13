@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { demoRequestsAPI, usersAPI } from '../../api';
 import {
   Plus, PlayCircle, Video, Image, Link2, Trash2, Edit3,
-  Send, Mail, Phone, Building2, User, ExternalLink, Wifi, WifiOff
+  Send, Mail, Phone, Building2, User, ExternalLink, Wifi, WifiOff, RefreshCw
 } from 'lucide-react';
 import {
   Card, Button, Badge, PageHeader, EmptyState, Modal, Input, Textarea,
@@ -166,8 +166,8 @@ const DemoRequestsPage = () => {
   const canCreate = !isDeveloper(); // manager + sales rep open demo requests
   const isDev = isDeveloper();
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const [rRes, uRes] = await Promise.all([
         demoRequestsAPI.getAll({ limit: 100 }),
@@ -177,9 +177,9 @@ const DemoRequestsPage = () => {
       const devList = (uRes.data.data || []).filter(u => u.role === 'developer' && u.approvalStatus === 'approved');
       setDevelopers(devList);
     } catch {
-      toast.error('Failed to load demo requests');
+      if (!silent) toast.error('Failed to load demo requests');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
@@ -224,9 +224,22 @@ const DemoRequestsPage = () => {
     }
   }, [isDev, user]);
 
-  const { isConnected } = useWebSocket(handleWebSocketMessage);
+  const { isConnected, mode } = useWebSocket(handleWebSocketMessage);
 
   useEffect(() => { load(); }, [load]);
+
+  // Fallback auto-sync polling when live WebSocket is not active
+  useEffect(() => {
+    if (isConnected) return;
+
+    const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        load(true);
+      }
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [isConnected, load]);
   useEffect(() => {
     if (searchParams.get('action') === 'new' && canCreate) setShowModal(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -313,10 +326,31 @@ const DemoRequestsPage = () => {
           : `${requests.length} total demo requests`}
         actions={
           <div className="flex items-center gap-3">
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${isConnected ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-              {isConnected ? <Wifi className="w-3.5 h-3.5 text-emerald-600 animate-pulse" /> : <WifiOff className="w-3.5 h-3.5 text-amber-600" />}
-              <span>{isConnected ? 'Live' : 'Connecting...'}</span>
-            </div>
+            {isConnected ? (
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
+                title="Real-time WebSocket connected"
+              >
+                <Wifi className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+                <span>Live</span>
+              </div>
+            ) : mode === 'connecting' ? (
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800"
+                title="Connecting to real-time server..."
+              >
+                <WifiOff className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span>Connecting...</span>
+              </div>
+            ) : (
+              <div
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800"
+                title="Auto-sync active (background refresh every 15s)"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                <span>Auto-sync</span>
+              </div>
+            )}
             {canCreate ? (
               <Button onClick={() => setShowModal(true)} icon={Plus}>
                 New Demo Request

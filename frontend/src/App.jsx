@@ -27,12 +27,36 @@ import UsersPage from './pages/users/UsersPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import DemoRequestsPage from './pages/demo/DemoRequestsPage';
 
-// Role gate: renders children only for the allowed roles, otherwise → home
+import LandingPage from './pages/landing/LandingPage';
+
+// Role gate: renders children only for the allowed roles, otherwise → dashboard
 const RequireRole = ({ roles, children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (!roles.includes(user?.role)) return <Navigate to="/" replace />;
+  if (!roles.includes(user?.role)) return <Navigate to="/dashboard" replace />;
   return children;
+};
+
+// Root route: Show modern Landing Page for unauthenticated visitors, dashboard for logged in users
+const RootRoute = () => {
+  const { isAuthenticated, loading } = useAuth();
+  const hasToken = typeof window !== 'undefined' && Boolean(localStorage.getItem('token'));
+
+  // If token is present and still loading auth, show sleek themed backdrop
+  if (loading && hasToken) {
+    return (
+      <div className="fixed inset-0 bg-[#070A11] flex items-center justify-center z-50">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1.5px] animate-pulse">
+          <div className="w-full h-full bg-[#090D16] rounded-[14px] flex items-center justify-center">
+            <img src="/logo.png" alt="Crefto" className="w-7 h-7 object-contain" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  return <LandingPage />;
 };
 
 const MANAGER = ['manager'];
@@ -48,26 +72,30 @@ function App() {
           toastOptions={{
             duration: 3500,
             style: {
-              background: '#1E293B',
+              background: '#0F172A',
               color: '#F8FAFC',
-              borderRadius: '12px',
+              borderRadius: '14px',
               fontSize: '14px',
               fontWeight: 500,
-              padding: '12px 16px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              padding: '12px 18px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              border: '1px solid rgba(255,255,255,0.1)',
             },
             success: { iconTheme: { primary: '#10B981', secondary: '#fff' } },
             error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
           }}
         />
         <Routes>
-          {/* Auth routes */}
+          {/* Public Website & Auth routes */}
+          <Route path="/" element={<RootRoute />} />
+          <Route path="/home" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-          {/* App routes (protected) */}
+          {/* App routes (protected by Layout) */}
           <Route element={<Layout />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/demo-requests" element={<DemoRequestsPage />} />
             <Route path="/leads" element={<RequireRole roles={SALES}><LeadsPage /></RequireRole>} />
             <Route path="/leads/:id" element={<RequireRole roles={SALES}><LeadDetailPage /></RequireRole>} />

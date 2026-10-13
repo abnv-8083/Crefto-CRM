@@ -4,8 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 export const useWebSocket = (onMessage) => {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
+  const [mode, setMode] = useState('connecting'); // 'live' | 'connecting' | 'polling'
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
+  const reconnectAttemptsRef = useRef(0);
   const onMessageRef = useRef(onMessage);
 
   useEffect(() => {
@@ -16,11 +18,27 @@ export const useWebSocket = (onMessage) => {
     const token = localStorage.getItem('token');
     if (!token || !user) {
       setIsConnected(false);
+      setMode('polling');
       return;
     }
 
     // Determine WS URL
     let wsUrl = import.meta.env.VITE_WS_URL;
+
+    // Check if running on Vercel host without explicit external WebSocket server configured
+    const isVercelHost = typeof window !== 'undefined' && (
+      window.location.hostname.endsWith('.vercel.app') ||
+      window.location.hostname === 'vercel.app'
+    );
+
+    if (!wsUrl && isVercelHost) {
+      // Vercel serverless functions do not support persistent WebSockets.
+      // Automatically fallback to polling to prevent console connection errors.
+      setIsConnected(false);
+      setMode('polling');
+      return;
+    }
+
     if (!wsUrl) {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       // In dev with Vite proxy, ws on current host /ws routes to backend port 5000
@@ -28,12 +46,15 @@ export const useWebSocket = (onMessage) => {
     }
 
     try {
+      setMode('connecting');
       const urlWithToken = `${wsUrl}?token=${encodeURIComponent(token)}`;
       const ws = new WebSocket(urlWithToken);
       wsRef.current = ws;
 
       ws.onopen = () => {
+        reconnectAttemptsRef.current = 0;
         setIsConnected(true);
+        setMode('live');
       };
 
       ws.onmessage = (event) => {
@@ -47,11 +68,16 @@ export const useWebSocket = (onMessage) => {
 
       ws.onclose = () => {
         setIsConnected(false);
-        // Attempt reconnection after 3 seconds if user is still logged in
-        if (localStorage.getItem('token')) {
+        // Attempt reconnection up to 3 times with backoff if user is still logged in
+        if (localStorage.getItem('token') && reconnectAttemptsRef.current < 3) {
+          reconnectAttemptsRef.current += 1;
+          const delay = reconnectAttemptsRef.current * 3000;
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
-          }, 3000);
+          }, delay);
+        } else {
+          // Exceeded max attempts or serverless environment: graceful fallback to polling
+          setMode('polling');
         }
       };
 
@@ -60,6 +86,7 @@ export const useWebSocket = (onMessage) => {
       };
     } catch (_) {
       setIsConnected(false);
+      setMode('polling');
     }
   }, [user]);
 
@@ -94,7 +121,7 @@ export const useWebSocket = (onMessage) => {
     return false;
   }, []);
 
-  return { isConnected, send };
+  return { isConnected, mode, send };
 };
 
 export default useWebSocket;

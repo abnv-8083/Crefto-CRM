@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import {
   LayoutDashboard, Users, UserCheck, Handshake, Contact, CheckSquare,
   Calendar, Activity, Package, FileText, BarChart3, Settings,
-  X, TrendingUp, Target, Phone, PlayCircle,
+  X, TrendingUp, Target, Phone, PlayCircle, ExternalLink,
   PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 
@@ -14,7 +14,7 @@ const NAV_GROUPS = [
   {
     label: 'Main',
     items: [
-      { path: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['all'] },
+      { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['all'] },
       { path: '/leads', label: 'Leads', icon: Target, roles: ['manager', 'sales_rep'] },
       { path: '/customers', label: 'Customers', icon: UserCheck, roles: ['manager', 'sales_rep'] },
       { path: '/contacts', label: 'Contacts', icon: Contact, roles: ['manager', 'sales_rep'] },
@@ -50,6 +50,7 @@ const NAV_GROUPS = [
       { path: '/reports', label: 'Reports', icon: BarChart3, roles: ['manager'] },
       { path: '/users', label: 'Users', icon: Users, roles: ['manager'] },
       { path: '/settings', label: 'Settings', icon: Settings, roles: ['all'] },
+      { path: '/landing', label: 'Website', icon: ExternalLink, roles: ['all'] },
     ],
   },
 ];
@@ -153,7 +154,8 @@ const Sidebar = ({ isOpen, onClose, collapsed, onToggleCollapse }) => {
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = location.pathname === item.path ||
-                      (item.path !== '/' && location.pathname.startsWith(item.path));
+                      (item.path === '/dashboard' && (location.pathname === '/' || location.pathname === '/dashboard')) ||
+                      (item.path !== '/' && item.path !== '/dashboard' && location.pathname.startsWith(item.path));
                     const label = user?.role === 'developer' && item.developerLabel
                       ? item.developerLabel
                       : item.label;

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* Class-based dark mode: <html class="dark"> toggles the theme */
@@ -6,6 +6,7 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
 
   --color-primary-50:  #ECFDF5;
   --color-primary-100: #D1FAE5;
@@ -684,4 +685,48 @@
     padding: 0 !important;
   }
   .print\:hidden { display: none !important; }
+}
+
+/* ─── Creative GSAP & Editorial Utilities ────────────── */
+@layer utilities {
+  .font-display {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  .text-fluid-hero {
+    font-size: clamp(2.5rem, 6vw + 1rem, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+
+  .text-fluid-h2 {
+    font-size: clamp(2rem, 4vw + 0.5rem, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .text-fluid-h3 {
+    font-size: clamp(1.25rem, 2vw + 0.25rem, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .mask-line-container {
+    overflow: hidden;
+    display: block;
+  }
+
+  .glass-card-editorial {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-editorial-light {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(16, 185, 129, 0.12);
+  }
 }
